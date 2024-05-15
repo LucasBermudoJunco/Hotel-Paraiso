@@ -1,4 +1,4 @@
-package InterfaceDAO;
+package interfaceDAO;
 
 public interface ClasesDAO {
 	/*inicialmente, solo habrá altas y consultas, pero dejo la modificación preparada para futuras necesidades.*/

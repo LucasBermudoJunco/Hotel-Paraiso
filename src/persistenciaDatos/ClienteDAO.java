@@ -14,8 +14,8 @@ import java.sql.SQLException;
 
 import com.google.gson.Gson;
 
-import InterfaceDAO.ClasesDAO;
 import clases.Cliente;
+import interfaceDAO.ClasesDAO;
 
 
 public class ClienteDAO implements ClasesDAO{

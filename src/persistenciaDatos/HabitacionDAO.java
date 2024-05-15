@@ -15,8 +15,8 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import InterfaceDAO.ClasesDAO;
 import clases.Habitacion;
+import interfaceDAO.ClasesDAO;
 
 public class HabitacionDAO implements ClasesDAO {
 	
