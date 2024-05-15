@@ -1,20 +1,20 @@
-package Clases;
+package clases;
 
-public abstract class Persona {
-	
+public class Persona {
+
 	private String dni;
 	private String nombre;
 	private String apellidos;
-	private String email;
 	private String telefono;
+	private String email;
 
-	public Persona(String dni, String nombre, String apellidos, String email, String telefono) {
+	public Persona(String dni, String nombre, String apellidos,  String telefono, String email) {
 		super();
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.email = email;
 		this.telefono = telefono;
+		this.email = email;
 	}
 
 	public String getDni() {
@@ -59,8 +59,9 @@ public abstract class Persona {
 
 	@Override
 	public String toString() {
-		return "Persona [dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
-				+ ", telefono=" + telefono + "]";
+		return "Persona [dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos + ",telefono=" + telefono
+				+ ", email=" + email + "]";
 	}
 	
+
 }

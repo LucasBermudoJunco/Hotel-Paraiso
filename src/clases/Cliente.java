@@ -1,9 +1,12 @@
-package Clases;
+package clases;
+
+
 
 public class Cliente extends Persona{
-
-	public Cliente(String dni, String nombre, String apellidos, String email, String telefono) {
-		super(dni, nombre, apellidos, email, telefono);
+	
+	public Cliente(String dni, String nombre, String apellidos, String telefono, String email) {
+		super(dni, nombre, apellidos, telefono, email);
 	}
 
 }
+

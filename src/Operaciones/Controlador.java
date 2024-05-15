@@ -3,8 +3,8 @@ package Operaciones;
 import java.util.ArrayList;
 import java.util.List;
 
-import Clases.Cliente;
-import PersistenciaDatos.ClienteDAO;
+import persistenciaDatos.ClienteDAO;
+import clases.Cliente;
 
 public class Controlador {
 	

@@ -1,82 +1,152 @@
-package Clases;
-
-import java.time.LocalDate;
-import java.util.List;
+package clases;
 
 public class Reserva {
-	
-	private String id;
-	private Cliente cliente;
-	private Habitacion habitacion;
-	private List<Servicio> servicios;
-	private LocalDate fechaEntrada;
-	private LocalDate fechaSalida;
-	private double precioFinal;
-	
-	public Reserva() {
+	 private int id_reserva;
+	 private String habitacion;
+	 private String fecha_entrada;
+	 private String fecha_salida;
+	 private String doc_identidad;
+	 
+	 
+	 
+	 
+	 
+	/**
+	 * @param id_reserva
+	 * @param habitacion
+	 * @param fecha_entrada
+	 * @param fecha_salida
+	 * @param doc_identidad
+	 */
+	public Reserva(int id_reserva, String habitacion, String fecha_entrada, String fecha_salida, String doc_identidad) {
 		super();
-	}
-	public Reserva(String id, Cliente cliente, Habitacion habitacion, List<Servicio> servicios, LocalDate fechaEntrada,
-			LocalDate fechaSalida, double precioFinal) {
-		super();
-		this.id = id;
-		this.cliente = cliente;
+		this.id_reserva = id_reserva;
 		this.habitacion = habitacion;
-		this.servicios = servicios;
-		this.fechaEntrada = fechaEntrada;
-		this.fechaSalida = fechaSalida;
-		this.precioFinal = precioFinal;
+		this.fecha_entrada = fecha_entrada;
+		this.fecha_salida = fecha_salida;
+		this.doc_identidad = doc_identidad;
 	}
-	public String getId() {
-		return id;
+
+
+
+
+
+	/**
+	 * @return the id_reserva
+	 */
+	public int getId_reserva() {
+		return id_reserva;
 	}
-	public void setId(String id) {
-		this.id = id;
+
+
+
+
+
+	/**
+	 * @param id_reserva the id_reserva to set
+	 */
+	public void setId_reserva(int id_reserva) {
+		this.id_reserva = id_reserva;
 	}
-	public Cliente getCliente() {
-		return cliente;
-	}
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-	public Habitacion getHabitacion() {
+
+
+
+
+
+	/**
+	 * @return the habitacion
+	 */
+	public String getHabitacion() {
 		return habitacion;
 	}
-	public void setHabitacion(Habitacion habitacion) {
+
+
+
+
+
+	/**
+	 * @param habitacion the habitacion to set
+	 */
+	public void setHabitacion(String habitacion) {
 		this.habitacion = habitacion;
 	}
-	public List<Servicio> getServicios() {
-		return servicios;
+
+
+
+
+
+	/**
+	 * @return the fecha_entrada
+	 */
+	public String getFecha_entrada() {
+		return fecha_entrada;
 	}
-	public void setServicios(List<Servicio> servicios) {
-		this.servicios = servicios;
+
+
+
+
+
+	/**
+	 * @param fecha_entrada the fecha_entrada to set
+	 */
+	public void setFecha_entrada(String fecha_entrada) {
+		this.fecha_entrada = fecha_entrada;
 	}
-	public LocalDate getFechaEntrada() {
-		return fechaEntrada;
+
+
+
+
+
+	/**
+	 * @return the fecha_salida
+	 */
+	public String getFecha_salida() {
+		return fecha_salida;
 	}
-	public void setFechaEntrada(LocalDate fechaEntrada) {
-		this.fechaEntrada = fechaEntrada;
+
+
+
+
+
+	/**
+	 * @param fecha_salida the fecha_salida to set
+	 */
+	public void setFecha_salida(String fecha_salida) {
+		this.fecha_salida = fecha_salida;
 	}
-	public LocalDate getFechaSalida() {
-		return fechaSalida;
+
+
+
+
+
+	/**
+	 * @return the doc_identidad
+	 */
+	public String getDoc_identidad() {
+		return doc_identidad;
 	}
-	public void setFechaSalida(LocalDate fechaSalida) {
-		this.fechaSalida = fechaSalida;
+
+
+
+
+
+	/**
+	 * @param doc_identidad the doc_identidad to set
+	 */
+	public void setDoc_identidad(String doc_identidad) {
+		this.doc_identidad = doc_identidad;
 	}
-	public double getPrecioFinal() {
-		return precioFinal;
-	}
-	public void setPrecioFinal(double precioFinal) {
-		this.precioFinal = precioFinal;
-	}
+
+
+
+
+
 	@Override
 	public String toString() {
-		return "Reserva [id=" + id + ", cliente=" + cliente + ", habitacion=" + habitacion + ", servicios=" + servicios
-				+ ", fechaEntrada=" + fechaEntrada + ", fechaSalida=" + fechaSalida + ", precioFinal=" + precioFinal
-				+ "]";
+		return "Reserva [id_reserva=" + id_reserva + ", habitacion=" + habitacion + ", fecha_entrada=" + fecha_entrada
+				+ ", fecha_salida=" + fecha_salida + ", doc_identidad=" + doc_identidad + "]";
 	}
-	
-	// Métodos
-	
-
+	 
+	 
+	   
 }
