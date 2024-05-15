@@ -45,5 +45,4 @@ public class Servicio {
 	public String toString() {
 		return "Servicio [id=" + id + ", tipo=" + tipo + ", precio=" + precio + "]";
 	}
-
 }
