@@ -16,14 +16,18 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import clases.Habitacion;
-import interfaceDAO.ClasesDAO;
+import interfaceDAO.ClasesDAOOriginal;
 
-public class HabitacionDAO implements ClasesDAO {
+/* en esta clase se realizarán las consultas de las habitaciones libres y se actualizará 
+ * la fecha_salida cuando se realice una reserva */
+/* En la tabla se ha realizado una carga inicial para tener todas las habitaciones libres.
+ * Una habitación está libre cuando la fecha_salida es menor o igual a hoy */
+public class HabitacionDAO implements ClasesDAOOriginal {
 	
-	/* en esta clase se realizarán las consultas de las habitaciones libres y se actualizará 
-	 * la fecha_salida cuando se realice una reserva */
-	/* En la tabla se ha realizado una carga inicial para tener todas las habitaciones libres.
-	 * Una habitación está libre cuando la fecha_salida es menor o igual a hoy */
+/*************************** ATRIBUTOS *********************************/
+	
+	private ConexionABaseDeDatos conexion;
+	private Gson gson;
 	
 
 	@Override
@@ -34,12 +38,14 @@ public class HabitacionDAO implements ClasesDAO {
 
 	@Override
 	public String modificacion(String fichero) {
+		conexion = new ConexionABaseDeDatos();
+		
 		/*select min(habitacion) from habitacion where fecha_salida <= now() and id_habitacion= ?; */
 	
 		String nomFich = null;
 		Habitacion regHab=leerFichero(fichero);
 		ClienteDAO cli=new ClienteDAO();
-		Connection conexion = cli.conectar();
+		Connection con = conexion.conectar();
 		
 		if (conexion!=null) {
 		
@@ -47,7 +53,7 @@ public class HabitacionDAO implements ClasesDAO {
 				"SELECT  min(habitacion)as habitacion"+" FROM habitacion "+" WHERE fecha_salida <= now() AND id_habitacion = ? ";
 			  
 			try {
-				PreparedStatement sentencia = conexion.prepareStatement(sql);
+				PreparedStatement sentencia = con.prepareStatement(sql);
 				
 				//id_habitacion se corresponde con el tipo de habitación
 				
@@ -58,7 +64,7 @@ public class HabitacionDAO implements ClasesDAO {
 				if (rs.next()|| rs.getString("habitacion")!=null) {
 					String habitacion = rs.getString("habitacion");
 									
-					nomFich=actualizaTabla(habitacion,regHab.getFecha_salida(), conexion);
+					nomFich=actualizaTabla(habitacion,regHab.getFecha_salida(), con);
 
 					}
 					
@@ -77,7 +83,7 @@ public class HabitacionDAO implements ClasesDAO {
 			}
 		}	
 		try {
-			conexion.close();
+			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,6 +130,7 @@ public class HabitacionDAO implements ClasesDAO {
 	
 	@Override
 	public String consulta(String fichero) {
+		conexion = new ConexionABaseDeDatos();
 	
 		List<String> listHab=new ArrayList<>();
 
@@ -132,14 +139,14 @@ public class HabitacionDAO implements ClasesDAO {
 		String regGson,	ficheroRetorno = null;
 	
 		ClienteDAO cli=new ClienteDAO();
-		Connection conexion = cli.conectar();
+		Connection con = conexion.conectar();
 		
 		if (conexion!=null) {
 		
 			String sql = 
 			"SELECT id_habitacion , precio " +"FROM habitacion "+"WHERE fecha_salida <= curdate() "+"GROUP BY id_habitacion, precio "+"order by id_habitacion"; 
 			try {
-				PreparedStatement sentencia = conexion.prepareStatement(sql);
+				PreparedStatement sentencia = con.prepareStatement(sql);
 				
 				ResultSet rs = sentencia.executeQuery();
 				
@@ -177,7 +184,7 @@ public class HabitacionDAO implements ClasesDAO {
 					}
 				}
 					
-				conexion.close();
+				con.close();
 		
 			} catch (SQLException ex) {
 				String sqlMessage = ex.getSQLState();

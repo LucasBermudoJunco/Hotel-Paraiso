@@ -166,7 +166,7 @@ public class MenuPrincipal extends JFrame {
 		JMenuItem menuReservaConsulta = new JMenuItem("Consulta");
 		menuReservaConsulta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ReservaConsulta reserCons = new ReservaConsulta();
+				ReservaConsulta reserCons = new ReservaConsulta(desktopPane);
 				desktopPane.add(reserCons);
 				//control de posición del panel
 				reserCons.setLocation(60, 60);

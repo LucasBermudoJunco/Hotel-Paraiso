@@ -17,56 +17,149 @@ import clases.Reserva;
 import interfaceDAO.ClasesDAO;
 
 public class ReservaDAO implements ClasesDAO {
+	
+/*************************** ATRIBUTOS *********************************/
+	
+	private ConexionABaseDeDatos conexion;
+	private Gson gson;
+
+	
+	
+	
+	
+	
+	
+/*************************** MÉTODOS *********************************/
+	
+// MÉTODOS DE LA INTERFAZ ClasesDAO
+	
+	
+	
+	@Override
+	public void read(String fichero) {
+		conexion = new ConexionABaseDeDatos();
+		gson = new Gson();
+		
+		String codigo = "";
+		
+		// Lectura del fichero 
+		try {
+			BufferedReader lector = new BufferedReader(new FileReader(fichero));
+			
+			codigo = lector.readLine();
+			
+			lector.close();
+			
+			// Consulta a la Base de datos
+			Connection con = conexion.conectar();
+			
+			if(con != null) {
+				try {
+					String accionSQL = "select * from reserva where id_reserva = ?";
+					PreparedStatement sentPrep = con.prepareStatement(accionSQL);
+					
+					sentPrep.setString(1, codigo);
+					
+					ResultSet rs = sentPrep.executeQuery();
+					
+					// Escritura del resultado de la consulta en el fichero 				
+					try {					
+
+						BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
+						
+						if(rs.next()) {
+							String id_reserva_String = rs.getString("id_reserva");
+							int id_reserva_int = Integer.valueOf(id_reserva_String);
+							String habitacion = rs.getString("habitacion");
+							String fecha_entrada = rs.getString("fecha_entrada");
+							String fecha_salida = rs.getString("fecha_salida");
+							String doc_identidad = rs.getString("doc_identidad");
+							
+							Reserva reserva = new Reserva(id_reserva_int,habitacion,fecha_entrada,fecha_salida,doc_identidad);
+							
+							String datosReserva = gson.toJson(reserva);
+							
+							escritor.write(datosReserva);
+						} else {
+							escritor.write("No hay ninguna reserva con ese código");
+						}
+						
+						escritor.close();
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
-	public String alta(String fichero) {
+	public void create(String fichero) {
+		conexion = new ConexionABaseDeDatos();
 		
-		 	int errorSql = 0;
-			String nomFich = null;
-			Reserva regRes=leerFichero(fichero);
-			ClienteDAO cli=new ClienteDAO();
-			Connection conexion = cli.conectar();
+	 	int errorSql = 0;
+	 	
+		Reserva regRes = leerFichero(fichero);
+		
+		Connection con = conexion.conectar();
+		
+		if (con!=null) {
+			String sql = "INSERT INTO reserva (id_reserva,habitacion, fecha_entrada, fecha_salida, doc_identidad ) "
 			
-			if (conexion!=null) {
-				String sql = "INSERT INTO reserva (id_reserva,habitacion, fecha_entrada, fecha_salida, doc_identidad ) "
+								+ "             VALUES (null, ?,    ?,     ?,     ? )";
+			 
+
+			try {
+				PreparedStatement sentencia = con.prepareStatement(sql);
 				
-									+ "             VALUES (null, ?,    ?,     ?,     ? )";
-				 
+				sentencia.setString(1, regRes.getHabitacion());
+				sentencia.setString(2, regRes.getFecha_entrada());
+				sentencia.setString(3, regRes.getFecha_salida());
+				sentencia.setString(4, regRes.getDoc_identidad());
+			
 
-				try {
-					PreparedStatement sentencia = conexion.prepareStatement(sql);
-					
-					sentencia.setString(1, regRes.getHabitacion());
-					sentencia.setString(2, regRes.getFecha_entrada());
-					sentencia.setString(3, regRes.getFecha_salida());
-					sentencia.setString(4, regRes.getDoc_identidad());
+				sentencia.executeUpdate();
+
+				con.close();
+				errorSql=0;
+			} catch (SQLException ex) {
+				if (ex.getErrorCode()==1062) {
+					errorSql=1;
 				
-
-					sentencia.executeUpdate();
-
-					conexion.close();
-					errorSql=0;
-				} catch (SQLException ex) {
-					if (ex.getErrorCode()==1062) {
-						errorSql=1;
-					
-					}else if (ex.getErrorCode()==1045){
-						errorSql=2;
-					
-					}else {
-						System.out.println("Error SQL inesperado :"+ex.getMessage());
-						int errorCode = ex.getErrorCode();
-						System.out.println("Código de Error: " + errorCode);
-						String sqlMessage = ex.getSQLState();
-					    System.out.println("Mensaje SQL: " + sqlMessage);
-					}
+				}else if (ex.getErrorCode()==1045){
+					errorSql=2;
+				
+				}else {
+					System.out.println("Error SQL inesperado :"+ex.getMessage());
+					int errorCode = ex.getErrorCode();
+					System.out.println("Código de Error: " + errorCode);
+					String sqlMessage = ex.getSQLState();
+				    System.out.println("Mensaje SQL: " + sqlMessage);
 				}
-				//escribirFichSalida escribe sqlcode y por tanto es independiente de la clase que lo trate
-				nomFich=cli.escribirFichSalida(errorSql);
-		
 			}
-			return nomFich;
+			//escribirFichSalida escribe sqlcode y por tanto es independiente de la clase que lo trate
+			conexion.escribirFichSalida(errorSql);
+	
 		}
+	}
+	
+	@Override
+	public void update(String fichero) {
+		
+	}
+	
+	@Override
+	public void delete(String fichero) {
+		
+	}
+	
+	
+	
+// OTROS MÉTODOS
 	
 	/**
 	 * 
@@ -79,7 +172,7 @@ public class ReservaDAO implements ClasesDAO {
 		String regFich="";
 		
 		try {
-			BufferedReader leer=new BufferedReader(new FileReader(fichero));
+			BufferedReader leer = new BufferedReader(new FileReader(fichero));
 			String fila;
 			
 			/* solo lee un registro pero mantengo el while para no preguntar por fichero vacío*/
@@ -90,6 +183,7 @@ public class ReservaDAO implements ClasesDAO {
 				
 			}
 			
+			leer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -97,6 +191,7 @@ public class ReservaDAO implements ClasesDAO {
 		
 		
 		}
+		
 		Reserva clase=gson.fromJson(regFich, Reserva.class);
 		
 		
@@ -104,79 +199,79 @@ public class ReservaDAO implements ClasesDAO {
 	}
 	
 	
-		@Override
-		public String modificacion(String fichero) {
-			// no se puede modificar la reserva
-			return null;
-		}
+	public String modificacion(String fichero) {
+		// no se puede modificar la reserva
+		return null;
+	}
+	
+	public String consulta(String fichero) {
+		// Solo se necesita el id_reserva, todo el resto de campos a null
+		@SuppressWarnings("unused")
+		String regGson,	ficheroRetorno;
+		@SuppressWarnings("unused")
+		int errorSql = 0;
+		String nomFich = null;
+		Reserva regRes=leerFichero(fichero);
+		Connection con = conexion.conectar();
+		
+		if (con!=null) {
+		
+			String sql = "SELECT *" + "FROM reserva " + "WHERE id_reserva = ?";
+			try {
+				PreparedStatement sentencia = con.prepareStatement(sql);
+				//muevo el campo recuperado del fichero y lo muevo a la ?
+				sentencia.setInt(1, regRes.getId_reserva());
 
-		@Override
-		public String consulta(String fichero) {
-			// Solo se necesita el id_reserva, todo el resto de campos a null
-			String regGson,	ficheroRetorno;
-			int errorSql = 0;
-			String nomFich = null;
-			Reserva regRes=leerFichero(fichero);
-			ClienteDAO cli=new ClienteDAO();
-			Connection conexion = cli.conectar();
-			
-			if (conexion!=null) {
-			
-				String sql = "SELECT *" + "FROM reserva " + "WHERE id_reserva = ?";
-				try {
-					PreparedStatement sentencia = conexion.prepareStatement(sql);
-					//muevo el campo recuperado del fichero y lo muevo a la ?
-					sentencia.setInt(1, regRes.getId_reserva());
+				ResultSet rs = sentencia.executeQuery();
 
-					ResultSet rs = sentencia.executeQuery();
+				if (rs.next()|| rs.getString("habitacion")!=null) {
+					String habitacion = rs.getString("habitacion");
+					String fecEntrada = rs.getString("fecha_entrada");
+					String fecSalida = rs.getString("fecha_salida");
+					String dni = rs.getString("doc_identidad");
+					int reserva = rs.getInt("id_reserva");
+										
 
-					if (rs.next()|| rs.getString("habitacion")!=null) {
-						String habitacion = rs.getString("habitacion");
-						String fecEntrada = rs.getString("fecha_entrada");
-						String fecSalida = rs.getString("fecha_salida");
-						String dni = rs.getString("doc_identidad");
-						int reserva = rs.getInt("id_reserva");
-											
-
-						Gson gson=new Gson();
-						regRes=new Reserva (reserva, habitacion, fecEntrada, fecSalida, dni);
-						regGson = gson.toJson(regRes);
+					Gson gson=new Gson();
+					regRes=new Reserva (reserva, habitacion, fecEntrada, fecSalida, dni);
+					regGson = gson.toJson(regRes);
+					
+					BufferedWriter escribir=null;
+					nomFich="salidaReserva.json";
+					try {
+						escribir=new BufferedWriter(new FileWriter(nomFich));
 						
-						BufferedWriter escribir=null;
-						nomFich="salidaReserva.json";
+						escribir.write(regGson);
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}finally {
 						try {
-							escribir=new BufferedWriter(new FileWriter(nomFich));
-							
-							escribir.write(regGson);
-							
+							escribir.close();
 						} catch (IOException e) {
 							e.printStackTrace();
-						}finally {
-							try {
-								escribir.close();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
 						}
-						
-						conexion.close();
-					}
-				} catch (SQLException ex) {
-					String sqlMessage = ex.getSQLState();
-					if ( sqlMessage=="S1000") {
-						System.out.println("No se ha encontrado el cliente");
-					}else {
-						System.out.println("Error SQL inesperado :"+ex.getMessage());
-						int errorCode = ex.getErrorCode();
-						System.out.println("Código de Error: " + errorCode);
-					    System.out.println("Mensaje SQL: " + sqlMessage);
 					}
 					
+					con.close();
 				}
+			} catch (SQLException ex) {
+				String sqlMessage = ex.getSQLState();
+				if ( sqlMessage=="S1000") {
+					System.out.println("No se ha encontrado el cliente");
+				}else {
+					System.out.println("Error SQL inesperado :"+ex.getMessage());
+					int errorCode = ex.getErrorCode();
+					System.out.println("Código de Error: " + errorCode);
+				    System.out.println("Mensaje SQL: " + sqlMessage);
+				}
+				
+			}
+	
+		}
 		
-		}
-			return nomFich;
-		}
+		return nomFich;
+	}
 }
 
 

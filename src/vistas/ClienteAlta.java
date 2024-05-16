@@ -63,9 +63,6 @@ public class ClienteAlta extends JInternalFrame {
 		setBounds(100, 100, 450, 444);
 		getContentPane().setLayout(null);
 		
-		// Inicializao listaClientes(si no me da null....)
-        //listaClientes = new ArrayList<>();
-		
 		JLabel altaClienteNombre = new JLabel("Nombre:");
 		altaClienteNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		altaClienteNombre.setBounds(35, 71, 76, 14);
@@ -125,47 +122,45 @@ public class ClienteAlta extends JInternalFrame {
 		textFieldDni.setBounds(35, 32, 232, 28);
 		getContentPane().add(textFieldDni);
 
-/*************************************************************************************************/		
-			// Acción del botón para guardar datos en un arraylist string
-			btnRegistrar.addActionListener(new ActionListener() {
+		btnRegistrar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-				controlador = new Controlador();
-				
-		        // guardar los valores de los campos de texto
-		    	String dni = textFieldDni.getText();
-		        String nombre = textFieldNombre.getText();
-		        String apellidos = textFieldApellidos.getText();
-		        String telefono = textFieldTelefono.getText();
-		        String mail = textFieldMail.getText();
-		        
-		     // Verificamos que no haya campos vacíos o algún cliente con ese DNI
-		        if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || mail.isEmpty()) {
-		            // lanza mensaje si hay alguno vacío
-		            JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
-		        } else if(controlador.hayUnClienteConEsteDNI(dni)) {
-		            // lanza mensaje si hay algún cliente con ese dni
-		            JOptionPane.showMessageDialog(null, "Ya hay un cliente con ese DNI.", "Error", JOptionPane.ERROR_MESSAGE);
-		        } else {
-
-		        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
-		        String cliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
-		        
-		        controlador.insertarCliente(cliente);
-
-		        // Limpiar los campos de texto después de registrar el cliente(si no, no funciona)
-		        textFieldDni.setText("");
-		        textFieldNombre.setText("");
-		        textFieldApellidos.setText("");
-		        textFieldTelefono.setText("");
-		        textFieldMail.setText("");
-		        
-		        // mensaje de éxito y cerrar el panel con dispose(igual que en utilizaciones anteriores)
-                JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
-                //dispose(); --quiero que limpie, pero que no cierre el panel...por ahora
-		        } 
-		        
+		    	darDeAltaAUnCliente();
 		    }
 		});
+	}
 
+/********************** MÉTODO DAR DE ALTA A UN CLIENTE ******************************************************/	
+		
+	public void darDeAltaAUnCliente() {
+		controlador = new Controlador();
+		
+        // guardar los valores de los campos de texto
+    	String dni = textFieldDni.getText();
+        String nombre = textFieldNombre.getText();
+        String apellidos = textFieldApellidos.getText();
+        String telefono = textFieldTelefono.getText();
+        String mail = textFieldMail.getText();
+        
+    	// Verificamos que no haya campos vacíos
+        if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || mail.isEmpty()) {
+            // lanza mensaje si hay alguno vacío
+            JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+	        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
+	        String datosCliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
+	        
+	        controlador.insertarCliente(datosCliente);
+	
+	        // Limpiar los campos de texto después de registrar el cliente(si no, no funciona)
+	        textFieldDni.setText("");
+	        textFieldNombre.setText("");
+	        textFieldApellidos.setText("");
+	        textFieldTelefono.setText("");
+	        textFieldMail.setText("");
+	        
+	        // mensaje de éxito y cerrar el panel con dispose(igual que en utilizaciones anteriores)
+	        JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
+	        //dispose(); --quiero que limpie, pero que no cierre el panel...por ahora
+        }
 	}
 }

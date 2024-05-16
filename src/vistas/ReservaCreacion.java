@@ -7,6 +7,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
@@ -15,6 +17,9 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.border.TitledBorder;
+
+import operaciones.Controlador;
+
 import java.awt.Color;
 import javax.swing.JPanel;
 
@@ -24,6 +29,7 @@ public class ReservaCreacion extends JInternalFrame {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
+	private Controlador controlador;
 
 	/**
 	 * Launch the application.
@@ -148,5 +154,40 @@ public class ReservaCreacion extends JInternalFrame {
 		panel.setBounds(0, 269, 458, 72);
 		getContentPane().add(panel);
 
+	}
+	
+/********************** MÉTODO CREAR RESERVA ******************************************************/	
+
+	private void crearReserva(String documento) {
+		controlador = new Controlador();
+		
+//        // guardar los valores de los campos de texto
+//    	String dni = textFieldDni.getText();
+//        String nombre = textFieldNombre.getText();
+//        String apellidos = textFieldApellidos.getText();
+//        String telefono = textFieldTelefono.getText();
+//        String mail = textFieldMail.getText();
+//        
+//    	// Verificamos que no haya campos vacíos
+//        if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || mail.isEmpty()) {
+//            // lanza mensaje si hay alguno vacío
+//            JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+//        } else {
+//	        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
+//	        String datosCliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
+//	        
+//	        controlador.insertarCliente(datosCliente);
+//	
+//	        // Limpiar los campos de texto después de registrar el cliente(si no, no funciona)
+//	        textFieldDni.setText("");
+//	        textFieldNombre.setText("");
+//	        textFieldApellidos.setText("");
+//	        textFieldTelefono.setText("");
+//	        textFieldMail.setText("");
+//	        
+//	        // mensaje de éxito y cerrar el panel con dispose(igual que en utilizaciones anteriores)
+//	        JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
+//	        //dispose(); --quiero que limpie, pero que no cierre el panel...por ahora
+//        }
 	}
 }
