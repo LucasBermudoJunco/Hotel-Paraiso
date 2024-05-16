@@ -16,13 +16,13 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import clases.Habitacion;
-import interfaceDAO.ClasesDAOOriginal;
+import interfaceDAO.ClasesDAO;
 
 /* en esta clase se realizarán las consultas de las habitaciones libres y se actualizará 
  * la fecha_salida cuando se realice una reserva */
 /* En la tabla se ha realizado una carga inicial para tener todas las habitaciones libres.
  * Una habitación está libre cuando la fecha_salida es menor o igual a hoy */
-public class HabitacionDAO implements ClasesDAOOriginal {
+public class HabitacionDAO implements ClasesDAO {
 	
 /*************************** ATRIBUTOS *********************************/
 	
@@ -30,13 +30,11 @@ public class HabitacionDAO implements ClasesDAOOriginal {
 	private Gson gson;
 	
 
-	@Override
 	public String alta(String fichero) {
 		/* El alta se ha realizado con carga inicial*/
 		return null;
 	}
 
-	@Override
 	public String modificacion(String fichero) {
 		conexion = new ConexionABaseDeDatos();
 		
@@ -131,7 +129,6 @@ public class HabitacionDAO implements ClasesDAOOriginal {
 	}
 	
 	
-	@Override
 	public String consulta(String fichero) {
 		conexion = new ConexionABaseDeDatos();
 	
@@ -237,6 +234,30 @@ public class HabitacionDAO implements ClasesDAOOriginal {
 		
 		
 		return clase;
+	}
+
+	@Override
+	public void read(String fichero) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void create(String fichero) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(String fichero) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String fichero) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
