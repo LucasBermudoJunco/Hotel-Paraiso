@@ -101,14 +101,17 @@ public class HabitacionDAO implements ClasesDAOOriginal {
 	 * @param conexion
 	 * @return
 	 */
-	private String actualizaTabla(String hab, String fecsalida,Connection conexion) {
+	private String actualizaTabla(String hab, String fecsalida,Connection conexion2) {
+		conexion = new ConexionABaseDeDatos();
+		
+		Connection con = conexion.conectar();
 		ClienteDAO cli=new ClienteDAO();
 		int errorSql = -1;
 		String nomFich = null;
 		String sql = 
 				"UPDATE habitacion "+"SET fecha_salida = ? "+"WHERE habitacion = ? ";
 		try {
-			PreparedStatement sentencia = conexion.prepareStatement(sql);
+			PreparedStatement sentencia = con.prepareStatement(sql);
 			sentencia.setString(1, fecsalida);
 			sentencia.setString(2, hab);
 			sentencia.executeUpdate();
@@ -122,7 +125,7 @@ public class HabitacionDAO implements ClasesDAOOriginal {
 			   
 		}
 		//escribirFichSalida escribe sqlcode y por tanto es independiente de la clase que lo trate
-		nomFich=cli.escribirFichSalida(errorSql);
+		conexion.escribirFichSalida(errorSql);
 		
 		return nomFich;
 	}
