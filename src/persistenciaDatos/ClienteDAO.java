@@ -21,15 +21,20 @@ import interfaceDAO.ClasesDAO;
 public class ClienteDAO implements ClasesDAO{
 	/* Esta clase gestiona la tabla Cliente en la que se realizan el alta de cliente y la consulta del mismo*/
 	
-	public  Connection conectar() {
+	private Gson gson;
+	
+	public Connection conectar() {
 		Connection con = null;
+		
 		String[] usuContraseña;
 		usuContraseña=leerContraseña();
-		
 		String url = "jdbc:mysql://localhost:3306/Hotel";
+		String user = "root";
+		String password = "admin";
+		
 		try {
 		
-			con=DriverManager.getConnection(url,usuContraseña[0],usuContraseña[1]);
+			con = DriverManager.getConnection(url,user,password);
 		
 		} catch (SQLException ex) {
 			if (ex.getErrorCode()==1045) {
@@ -37,11 +42,11 @@ public class ClienteDAO implements ClasesDAO{
 			}else {
 				if (ex.getErrorCode()==1049) {
 					System.out.println("No existe la base de datos.");
+				}
+				
 			}
-			
 		}
-	}
-	return con;
+		return con;
 	}
 	
 	/**
@@ -54,7 +59,7 @@ public class ClienteDAO implements ClasesDAO{
 		String registroFic="";
 		
 		try {
-			input=new BufferedReader(new FileReader("usuarioContraseña.txt"));
+			input=new BufferedReader(new FileReader("files/usuarioContraseña.txt"));
 			registroFic=input.readLine();
 			registro = registroFic.split(",");			
 			
@@ -121,6 +126,47 @@ public class ClienteDAO implements ClasesDAO{
 		}
 		return nomFich;
 	}
+	
+	public String darDeAltaAEsteCliente(String rutaFicheroCliente) {
+		String email = "";
+		
+		// Lectura del fichero que contiene los datos del cliente
+		try {
+			BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroCliente));
+
+			String doc_identidad = lector.readLine();
+			String nombre = lector.readLine();
+			String apellidos = lector.readLine();
+			String telefono = lector.readLine();
+			email = lector.readLine();
+			
+			lector.close();
+			
+			// Dado de alta del cliente
+			Connection conexion = conectar();
+			if(conexion != null) {
+				try {
+					String accionSQL = "INSERT INTO cliente (doc_identidad, nombre, apellidos, telefono, email ) "
+								+ "             VALUES ( ?,    ?,     ?,     ?,     ?  )";
+					PreparedStatement sentPrep = conexion.prepareStatement(accionSQL);
+
+					sentPrep.setString(1,doc_identidad);
+					sentPrep.setString(2,nombre);
+					sentPrep.setString(3,apellidos);
+					sentPrep.setString(4,telefono);
+					sentPrep.setString(5,email);
+					
+					sentPrep.executeUpdate();
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return email;
+	}
 
 
 	public String escribirFichSalida(int errorSql) {
@@ -141,6 +187,144 @@ public class ClienteDAO implements ClasesDAO{
 			}
 		}
 		return nomFich;
+	}
+	
+	public boolean hayUnClienteConEsteDNI(String rutaFicheroCliente) {
+		boolean hayUnClienteConEsteDNI = false;
+		
+		Connection conexion = conectar();
+		if(conexion != null) {
+			// Lectura del fichero
+			String documento = "";
+				
+			try {
+				BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroCliente));
+				
+				String lineaActual = lector.readLine();
+				
+				while(lineaActual != null) {
+					documento += lineaActual;
+					
+					lineaActual = lector.readLine();
+				}
+				
+				lector.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+			
+			// Consulta a la base de datos
+			try {
+				String accionSQL = "select nombre from cliente where doc_identidad = ?";
+				PreparedStatement sentPrep = conexion.prepareStatement(accionSQL);
+				
+				sentPrep.setString(1, documento);
+				
+				ResultSet rs = sentPrep.executeQuery();
+				
+				if(rs.next()) {
+					hayUnClienteConEsteDNI = true;
+				}
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return hayUnClienteConEsteDNI;
+	}
+	
+	// MÉTODO COMÚN PARA OBTENER LOS DATOS DE UN FICHERO CONVERTIDOS A UN STRING
+	private String convertirEsteFicheroEnUnSoloString(String rutaFichero) {
+		String ficheroEnString = "";
+		
+		try {
+			BufferedReader lector = new BufferedReader(new FileReader(rutaFichero));
+			
+			String lineaActualDelFichero = lector.readLine();
+			
+			if(!lineaActualDelFichero.isEmpty()) {
+				do {
+					ficheroEnString += lineaActualDelFichero;
+					
+					lineaActualDelFichero = lector.readLine();
+				} while(lineaActualDelFichero != null);
+			}
+			
+			lector.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return ficheroEnString;
+	}
+	
+	// MÉTODO PARA CONSULTAR EL CLIENTE QUE TENGA UNA IDENTIFICACIÓN CONCRETA
+	public void buscarClienteConEsteDNI(String rutaFicheroCliente) {
+		Connection conexion = conectar();
+		
+		if(conexion != null) {
+			// Lectura del fichero
+			String documento = "";
+				
+			try {
+				BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroCliente));
+				
+				String lineaActual = lector.readLine();
+				
+				while(lineaActual != null) {
+					documento += lineaActual;
+					
+					lineaActual = lector.readLine();
+				}
+				
+				lector.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println("Documento:  " + documento);
+			
+			// Consulta a la base de datos
+			try {
+				String accionSQL = "select * from cliente where doc_identidad = ?";
+				PreparedStatement sentPrep = conexion.prepareStatement(accionSQL);
+				
+				
+				sentPrep.setString(1, documento);
+				
+				ResultSet rs = sentPrep.executeQuery();
+				
+				try {
+					BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
+					
+					if(rs.next()) {
+						String dni = rs.getString("doc_identidad");
+						String nombre = rs.getString("nombre");
+						String apellidos = rs.getString("apellidos");
+						String telefono = rs.getString("telefono");
+						String email = rs.getString("email");
+												
+						escritor.write(dni);
+						escritor.newLine();
+						escritor.write(nombre);
+						escritor.newLine();
+						escritor.write(apellidos);
+						escritor.newLine();
+						escritor.write(telefono);
+						escritor.newLine();
+						escritor.write(email);
+					} else {
+						escritor.write("No hay ningún cliente con ese DNI");
+					}
+					
+					escritor.close();
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 

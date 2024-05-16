@@ -1,0 +1,4 @@
+0,"Alta realizada correctamente"
+1,"El cliente ya existe en la Base de Datos","Código 1062"
+2,"No tiene autorización a la base de datos","Código 1045"
+3,"No existe la base de datos","Código 1049"

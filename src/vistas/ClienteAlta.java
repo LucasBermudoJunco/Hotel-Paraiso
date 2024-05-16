@@ -10,19 +10,19 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
 
+import operaciones.Controlador;
+
 public class ClienteAlta extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldNombre;
-	private JTextField textFieldApellido1;
-	private JTextField textFieldApellido2;
+	private JTextField textFieldApellidos;
 	private JTextField textFieldTelefono;
 	private JTextField textFieldMail;
 	
@@ -30,6 +30,8 @@ public class ClienteAlta extends JInternalFrame {
 	//para guardar datos alta cliente
 	//private ArrayList<String> listaClientes;
 	private JTextField textFieldDni;
+	
+	private Controlador controlador;
 	
 
 	/**
@@ -69,15 +71,10 @@ public class ClienteAlta extends JInternalFrame {
 		altaClienteNombre.setBounds(35, 71, 76, 14);
 		getContentPane().add(altaClienteNombre);
 		
-		JLabel altaClienteApellido1 = new JLabel("Primer apellido:");
+		JLabel altaClienteApellido1 = new JLabel("Apellidos:");
 		altaClienteApellido1.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		altaClienteApellido1.setBounds(35, 127, 129, 21);
 		getContentPane().add(altaClienteApellido1);
-		
-		JLabel altaClienteApellido2 = new JLabel("Segundo apellido:");
-		altaClienteApellido2.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		altaClienteApellido2.setBounds(35, 185, 129, 28);
-		getContentPane().add(altaClienteApellido2);
 		
 		JLabel altaClienteTelefono = new JLabel("Teléfono:");
 		altaClienteTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -94,15 +91,10 @@ public class ClienteAlta extends JInternalFrame {
 		getContentPane().add(textFieldNombre);
 		textFieldNombre.setColumns(10);
 		
-		textFieldApellido1 = new JTextField();
-		textFieldApellido1.setColumns(10);
-		textFieldApellido1.setBounds(35, 153, 232, 28);
-		getContentPane().add(textFieldApellido1);
-		
-		textFieldApellido2 = new JTextField();
-		textFieldApellido2.setColumns(10);
-		textFieldApellido2.setBounds(35, 214, 232, 28);
-		getContentPane().add(textFieldApellido2);
+		textFieldApellidos = new JTextField();
+		textFieldApellidos.setColumns(10);
+		textFieldApellidos.setBounds(35, 153, 232, 28);
+		getContentPane().add(textFieldApellidos);
 		
 		textFieldTelefono = new JTextField();
 		textFieldTelefono.setColumns(10);
@@ -137,30 +129,33 @@ public class ClienteAlta extends JInternalFrame {
 			// Acción del botón para guardar datos en un arraylist string
 			btnRegistrar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
+				controlador = new Controlador();
+				
 		        // guardar los valores de los campos de texto
 		    	String dni = textFieldDni.getText();
 		        String nombre = textFieldNombre.getText();
-		        String apellido1 = textFieldApellido1.getText();
-		        String apellido2 = textFieldApellido2.getText();
+		        String apellidos = textFieldApellidos.getText();
 		        String telefono = textFieldTelefono.getText();
 		        String mail = textFieldMail.getText();
 		        
-		     // Verificamos que no haya campos vacíos
-		        if (dni.isEmpty() || nombre.isEmpty() || apellido1.isEmpty() || apellido2.isEmpty() || telefono.isEmpty() || mail.isEmpty()) {
-		            // lanza mensaje si alguno vacío
+		     // Verificamos que no haya campos vacíos o algún cliente con ese DNI
+		        if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || mail.isEmpty()) {
+		            // lanza mensaje si hay alguno vacío
 		            JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+		        } else if(controlador.hayUnClienteConEsteDNI(dni)) {
+		            // lanza mensaje si hay algún cliente con ese dni
+		            JOptionPane.showMessageDialog(null, "Ya hay un cliente con ese DNI.", "Error", JOptionPane.ERROR_MESSAGE);
 		        } else {
 
 		        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
-		        String cliente = dni + "," + nombre + "," + apellido1 + "," + apellido2 + "," + telefono + "," + mail;
-		        //listaClientes.add(cliente);
+		        String cliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
 		        
+		        controlador.insertarCliente(cliente);
 
 		        // Limpiar los campos de texto después de registrar el cliente(si no, no funciona)
 		        textFieldDni.setText("");
 		        textFieldNombre.setText("");
-		        textFieldApellido1.setText("");
-		        textFieldApellido2.setText("");
+		        textFieldApellidos.setText("");
 		        textFieldTelefono.setText("");
 		        textFieldMail.setText("");
 		        

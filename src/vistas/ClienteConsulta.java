@@ -19,6 +19,9 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import operaciones.Controlador;
+
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -31,6 +34,7 @@ public class ClienteConsulta extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
+	private Controlador controlador;
 	
 	//pruebas funcionamiento
     private JTextField textFieldDocumento;
@@ -152,40 +156,70 @@ public class ClienteConsulta extends JInternalFrame {
 /********************** MÉTODO BUSCAR CLIENTE ******************************************************/	
 	
 	private void buscarCliente(String documento) {
-	    boolean encontrado = false;
-	    for (int i = 0; i < listaClientes.size(); i++) {
-	        String cliente = listaClientes.get(i);
-	        String[] datosCliente = cliente.split(",");
-	        if (datosCliente[0].equals(documento)) {
-	            encontrado = true;
-
-	            //mostrarInformacionCliente(cliente);
-	            
-	            
-	            textArea.setText(
-	            	    "INFORMACIÓN DEL CLIENTE:\n" +
-	            	    "___________________________________________________________________________________\n\n" +
-	            	    "DNI:\t\t" + datosCliente[0] + "\n" +
-	            	    "NOMBRE:\t\t" + datosCliente[1] + "\n" +
-	            	    "PRIMER APELLIDO:\t" + datosCliente[2] + "\n" +
-	            	    "SEGUNDO APELLIDO:\t" + datosCliente[3] + "\n" +
-	            	    "TELÉFONO:\t"+"\t" + datosCliente[4] + "\n" +
-	            	    "CORREO ELECTRÓNICO:\t" + datosCliente[5]
-	            	    );
-	            
-	            JOptionPane.showMessageDialog(this, "Cliente encontrado", "Información del cliente", JOptionPane.INFORMATION_MESSAGE);
-	            
-	            break;
-	            
-	           
-	        }
-	    }
-	    if (!encontrado) {
-	        // Si el cliente no se encuentra, lanzar el JDialog ConfirmacionCliente
+		controlador = new Controlador();
+		
+		String infoCliente = controlador.obtenerInfoClienteConEsteDNI(documento);
+		
+		System.out.println("infoCliente:  " + infoCliente);
+		
+		if(!infoCliente.isEmpty()) {
+			String[] datosCliente = infoCliente.split(",");
+			
+			//mostrarInformacionCliente(cliente);
+	        textArea.setText(
+	        	    "INFORMACIÓN DEL CLIENTE:\n" +
+	        	    "___________________________________________________________________________________\n\n" +
+	        	    "DNI:\t\t" + datosCliente[0] + "\n" +
+	        	    "NOMBRE:\t\t" + datosCliente[1] + "\n" +
+	        	    "APELLIDOS:\t\t" + datosCliente[2] + "\n" +
+	        	    "TELÉFONO:\t"+"\t" + datosCliente[3] + "\n" +
+	        	    "CORREO ELECTRÓNICO:\t" + datosCliente[4]
+	        	    );
+	        
+	        JOptionPane.showMessageDialog(this, "Cliente encontrado", "Información del cliente", JOptionPane.INFORMATION_MESSAGE);
+	        
+		} else {
+			// Si el cliente no se encuentra, lanzar el JDialog ConfirmacionCliente
 	        ConfirmacionCliente confCli = new ConfirmacionCliente(getDesktopPane());
-			//centrar en el escritorio
+			// Centrar en el escritorio
 			confCli.setLocationRelativeTo(getDesktopPane());
 	        confCli.setVisible(true);
-	    }
+		}
+		
+//	    boolean encontrado = false;
+//	    for (int i = 0; i < listaClientes.size(); i++) {
+//	        String cliente = listaClientes.get(i);
+//	        String[] datosCliente = cliente.split(",");
+//	        if (datosCliente[0].equals(documento)) {
+//	            encontrado = true;
+//	
+//	            //mostrarInformacionCliente(cliente);
+//	            
+//	            
+//	            textArea.setText(
+//	            	    "INFORMACIÓN DEL CLIENTE:\n" +
+//	            	    "___________________________________________________________________________________\n\n" +
+//	            	    "DNI:\t\t" + datosCliente[0] + "\n" +
+//	            	    "NOMBRE:\t\t" + datosCliente[1] + "\n" +
+//	            	    "PRIMER APELLIDO:\t" + datosCliente[2] + "\n" +
+//	            	    "SEGUNDO APELLIDO:\t" + datosCliente[3] + "\n" +
+//	            	    "TELÉFONO:\t"+"\t" + datosCliente[4] + "\n" +
+//	            	    "CORREO ELECTRÓNICO:\t" + datosCliente[5]
+//	            	    );
+//	            
+//	            JOptionPane.showMessageDialog(this, "Cliente encontrado", "Información del cliente", JOptionPane.INFORMATION_MESSAGE);
+//	            
+//	            break;
+//	            
+//	           
+//	        }
+//	    }
+//	    if (!encontrado) {
+//	        // Si el cliente no se encuentra, lanzar el JDialog ConfirmacionCliente
+//	        ConfirmacionCliente confCli = new ConfirmacionCliente(getDesktopPane());
+//			//centrar en el escritorio
+//			confCli.setLocationRelativeTo(getDesktopPane());
+//	        confCli.setVisible(true);
+//	    }
 	}
 }
