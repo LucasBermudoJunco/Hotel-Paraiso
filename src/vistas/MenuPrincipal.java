@@ -29,7 +29,7 @@ public class MenuPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JDesktopPane desktopPane;
-	//Con esta variable consigo ajustar los margenes del logo respecto a la pantalla
+	//Con esta vriable consigo ajustar los margenes del logo respecto a la pantalla
 	private final int MARGIN = 20; // Controlo directamente desde aqui cambiando el valor
 	
 	//para evitar diplicidaes en paneles activos
@@ -60,6 +60,7 @@ public class MenuPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public MenuPrincipal() {
+		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MenuPrincipal.class.getResource("/Images/iconoLogo.png")));
 		setFont(new Font("Arial", Font.PLAIN, 15));
 		setType(Type.POPUP);
@@ -136,7 +137,7 @@ public class MenuPrincipal extends JFrame {
 		JMenuItem menuClienteAlta = new JMenuItem("Alta");
 		menuClienteAlta.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ClienteAlta cliAlt = new ClienteAlta();
+                ClienteAlta cliAlt = new ClienteAlta("");
                 desktopPane.add(cliAlt);
 				//control de posición del panel
 				cliAlt.setLocation(40, 40);
@@ -198,22 +199,6 @@ public class MenuPrincipal extends JFrame {
 		menuReservaRealizar.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		menuReserva.add(menuReservaRealizar);
 		
-		JMenu menuFactura = new JMenu("Facturas");
-		menuFactura.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Images/factura.png")));
-		menuFactura.setForeground(Color.WHITE);
-		menuFactura.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		menuBar.add(menuFactura);
-		
-		JMenuItem menuFacturaConsulta = new JMenuItem("Consulta");
-		menuFacturaConsulta.setBackground(new Color(255, 255, 255));
-		menuFacturaConsulta.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		menuFactura.add(menuFacturaConsulta);
-		
-		JMenuItem menuFacturaRealizar = new JMenuItem("Realizar");
-		menuFacturaRealizar.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		menuFacturaRealizar.setBackground(new Color(255, 255, 255));
-		menuFactura.add(menuFacturaRealizar);
-		
 		desktopPane = new JDesktopPane();
 		desktopPane.setBorder(null);
 		desktopPane.setBackground(new Color(255, 255, 255));
@@ -232,45 +217,6 @@ public class MenuPrincipal extends JFrame {
 	                int x = desktopPane.getWidth() - logo.getWidth()- MARGIN;
 	                int y = desktopPane.getHeight() - logo.getHeight()- MARGIN;
 	                logo.setBounds(x, y, logo.getWidth(), logo.getHeight());
-	            }
-	        });
-		
-		
-		JLabel version = new JLabel("Interfaz gráfica versión V 0.1");
-		version.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		version.setHorizontalAlignment(SwingConstants.LEFT);
-		version.setBounds(1090, 11, 164, 14);
-		desktopPane.add(version);
-		
-		//Component adapter para posicionar el texto relativo
-		 desktopPane.addComponentListener(new ComponentAdapter() {
-	            @Override
-	            public void componentResized(ComponentEvent e) {
-	                int width = desktopPane.getWidth();
-	                int height = desktopPane.getHeight();
-	                int xVersion = width - version.getWidth() - 10; // 10 es el margen desde el borde derecho
-	                int yVersion = 10; // 10 es el margen desde el borde superior
-	                version.setBounds(xVersion, yVersion, version.getWidth(), version.getHeight());
-	            }
-	        });
-		
-		
-		
-		JTextArea log = new JTextArea();
-		log.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-		log.setText("- Comportamientos menú y submenú\r\n- Comportamientos botones Jinternal\r\n- Comportamiento botones Jdialog\r\n- Clientes: inserción y extracción de datos\r\n- Reservas: extracción de datos");
-		log.setBounds(1054, 36, 200, 88);
-		desktopPane.add(log);
-		
-		//Component adapter para posicionar el texto relativo
-		 desktopPane.addComponentListener(new ComponentAdapter() {
-	            @Override
-	            public void componentResized(ComponentEvent e) {
-	                int width = desktopPane.getWidth();
-	                int height = desktopPane.getHeight();
-	                int xLog = width - log.getWidth() - 10; // 10 es el margen desde el borde derecho
-	                int yLog = 30; // 30 es el margen desde el borde superior
-	                log.setBounds(xLog, yLog, log.getWidth(), log.getHeight());
 	            }
 	        });
 		

@@ -48,7 +48,7 @@ public class ConfirmacionCliente extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ConfirmacionCliente(JDesktopPane desktopPane) {
+	public ConfirmacionCliente(JDesktopPane desktopPane, String text) {
 		setType(Type.POPUP);
 		setResizable(false);
 		
@@ -83,7 +83,7 @@ public class ConfirmacionCliente extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					
 					
-					ClienteAlta cliAlt = new ClienteAlta();
+					ClienteAlta cliAlt = new ClienteAlta(text);
 					//para que se vea en el escritorio
 					desktopPane.add(cliAlt);
 					cliAlt.setVisible(true);

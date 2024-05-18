@@ -37,125 +37,150 @@ public class ClienteDAO implements ClasesDAO{
 	
 	
 	@Override
-	public void read(String fichero) {
+	public boolean read(String fichero) {
+		boolean conexionCorrecta = false;
+		
 		conexion = new ConexionABaseDeDatos();
 		gson = new Gson();
 		
-		Connection con = conexion.conectar();
-		
-		if(conexion != null) {
+		// Conexión a la base de datos
+		try {
+			Connection con = conexion.conectar();
+			
+			conexionCorrecta = true;
+			
 			// Lectura del fichero
 			String documento = "";
 				
 			try {
 				BufferedReader lector = new BufferedReader(new FileReader(fichero));
 				
-				String lineaActual = lector.readLine();
-				
-				while(lineaActual != null) {
-					documento += lineaActual;
-					
-					lineaActual = lector.readLine();
-				}
+				documento = lector.readLine();
 				
 				lector.close();
+				
+				// Consulta a la base de datos
+				try {
+					String accionSQL = "select * from cliente where doc_identidad = ?";
+					PreparedStatement sentPrep = con.prepareStatement(accionSQL);
+					
+					sentPrep.setString(1, documento);
+					
+					ResultSet rs = sentPrep.executeQuery();
+					
+					// Escritura en el fichero
+					try {
+						BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
+						
+						if(rs.next()) {
+							String dni = rs.getString("doc_identidad");
+							String nombre = rs.getString("nombre");
+							String apellidos = rs.getString("apellidos");
+							String telefono = rs.getString("telefono");
+							String email = rs.getString("email");
+							
+							Cliente cliente = new Cliente(dni,nombre,apellidos,telefono,email);
+							
+							String datosCliente = gson.toJson(cliente);
+							
+							escritor.write(datosCliente);
+						} else {
+							escritor.write("No hay ningún cliente con ese DNI");
+						}
+						
+						escritor.close();
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 			
-			// Consulta a la base de datos
 			try {
-				String accionSQL = "select * from cliente where doc_identidad = ?";
-				PreparedStatement sentPrep = con.prepareStatement(accionSQL);
+				BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
 				
-				sentPrep.setString(1, documento);
+				escritor.write("error de conexión");
 				
-				ResultSet rs = sentPrep.executeQuery();
-				
-				// Escritura en el fichero
-				try {
-					BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
-					
-					if(rs.next()) {
-						String dni = rs.getString("doc_identidad");
-						String nombre = rs.getString("nombre");
-						String apellidos = rs.getString("apellidos");
-						String telefono = rs.getString("telefono");
-						String email = rs.getString("email");
-						
-						Cliente cliente = new Cliente(dni,nombre,apellidos,telefono,email);
-						
-						String datosCliente = gson.toJson(cliente);
-						
-						escritor.write(datosCliente);
-					} else {
-						escritor.write("No hay ningún cliente con ese DNI");
-					}
-					
-					escritor.close();
-				} catch(IOException e) {
-					e.printStackTrace();
-				}
-			}catch(SQLException e) {
+				escritor.close();
+			} catch(IOException ex) {
 				e.printStackTrace();
 			}
 		}
+		
+		return conexionCorrecta;
 	}
 
 	@Override
-	public void create(String fichero) {
+	public boolean create(String fichero) {
+		boolean conexionCorrecta = true;
 		
 		int errorSql = 0;
 		
 		conexion = new ConexionABaseDeDatos();
 		
 		Cliente regCli = leerFichero(fichero);
-		Connection con = conexion.conectar();
 		
-		if (conexion!=null) {
-			String sql = "INSERT INTO cliente VALUES (?,?,?,?,?)";
-
-			try {
-				PreparedStatement sentencia = con.prepareStatement(sql);
-				sentencia.setString(1, regCli.getDni());
-				sentencia.setString(2, regCli.getNombre());
-				sentencia.setString(3, regCli.getApellidos());
-				sentencia.setString(4, regCli.getTelefono());
-				sentencia.setString(5, regCli.getEmail());
-				
-				sentencia.executeUpdate();
-
-				con.close();
-				
-				errorSql=0;
-			} catch (SQLException ex) {
-				if (ex.getErrorCode()==1062) {
-					errorSql=1;
-				
-				} else if (ex.getErrorCode()==1045){
-					errorSql=2;
-				
-				} else {
-					System.out.println("Error SQL inesperado :"+ex.getMessage());
-					int errorCode = ex.getErrorCode();
-					System.out.println("Código de Error: " + errorCode);
-					String sqlMessage = ex.getSQLState();
-				    System.out.println("Mensaje SQL: " + sqlMessage);
+		try {
+			Connection con = conexion.conectar();
+		
+			if (conexion!=null) {
+				String sql = "INSERT INTO cliente VALUES (?,?,?,?,?)";
+	
+				try {
+					PreparedStatement sentencia = con.prepareStatement(sql);
+					sentencia.setString(1, regCli.getDni());
+					sentencia.setString(2, regCli.getNombre());
+					sentencia.setString(3, regCli.getApellidos());
+					sentencia.setString(4, regCli.getTelefono());
+					sentencia.setString(5, regCli.getEmail());
+					
+					sentencia.executeUpdate();
+	
+					con.close();
+					
+					errorSql=0;
+				} catch (SQLException e) {
+					conexionCorrecta = false;
+					
+					e.printStackTrace();
+					
+	//				if (ex.getErrorCode()==1062) {
+	//					errorSql=1;
+	//				
+	//				} else if (ex.getErrorCode()==1045){
+	//					errorSql=2;
+	//				
+	//				} else {
+	//					System.out.println("Error SQL inesperado :"+ex.getMessage());
+	//					int errorCode = ex.getErrorCode();
+	//					System.out.println("Código de Error: " + errorCode);
+	//					String sqlMessage = ex.getSQLState();
+	//				    System.out.println("Mensaje SQL: " + sqlMessage);
+	//				}
 				}
+				
+				conexion.escribirFichSalida(errorSql);
 			}
-			
-			conexion.escribirFichSalida(errorSql);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
+			
+		return conexionCorrecta;
 	}
 	
 	@Override
-	public void update(String fichero) {
-		
+	public boolean update(String fichero) {
+		return false;
 	}
 	
 	@Override
-	public void delete(String fichero) {
-		
+	public boolean delete(String fichero) {
+		return false;
 	}
 	
 	
@@ -200,9 +225,9 @@ public class ClienteDAO implements ClasesDAO{
 
 		conexion = new ConexionABaseDeDatos();
 		
-		Connection con = conexion.conectar();
-		
-		if(conexion != null) {
+		try {
+			Connection con = conexion.conectar();
+			
 			// Lectura del fichero
 			String documento = "";
 				
@@ -235,6 +260,16 @@ public class ClienteDAO implements ClasesDAO{
 					hayUnClienteConEsteDNI = true;
 				}
 			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		} catch(Exception ex) {
+			try {
+				BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
+				
+				escritor.write("error de conexión");
+				
+				escritor.close();
+			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}

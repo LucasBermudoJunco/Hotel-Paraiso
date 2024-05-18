@@ -144,7 +144,16 @@ public class ClienteConsulta extends JInternalFrame {
         } else {
     		String infoCliente = controlador.obtenerInfoClienteConEsteDNI(documento);
     		
-			if(!infoCliente.isEmpty()) {
+			if(infoCliente.equals("error de conexión")) {
+				JOptionPane.showMessageDialog(null, "Error de conexión.");
+		        dispose(); //quiero que limpie y que cierre el panel
+			} else if(infoCliente.equals("No hay ningún cliente con ese DNI")) {
+				// Si el cliente no se encuentra, lanzar el JDialog ConfirmacionCliente
+		        ConfirmacionCliente confCli = new ConfirmacionCliente(getDesktopPane(),textFieldDocumento.getText());
+				// Centrar en el escritorio
+				confCli.setLocationRelativeTo(getDesktopPane());
+		        confCli.setVisible(true);
+			} else {
 				String[] datosCliente = infoCliente.split(",");
 				
 				//mostrarInformacionCliente(cliente);
@@ -160,12 +169,6 @@ public class ClienteConsulta extends JInternalFrame {
 		        
 		        JOptionPane.showMessageDialog(this, "Cliente encontrado", "Información del cliente", JOptionPane.INFORMATION_MESSAGE);
 		        
-			} else {
-				// Si el cliente no se encuentra, lanzar el JDialog ConfirmacionCliente
-		        ConfirmacionCliente confCli = new ConfirmacionCliente(getDesktopPane());
-				// Centrar en el escritorio
-				confCli.setLocationRelativeTo(getDesktopPane());
-		        confCli.setVisible(true);
 			}
         }
 	}

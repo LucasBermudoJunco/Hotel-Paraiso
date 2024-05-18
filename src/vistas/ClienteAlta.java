@@ -37,6 +37,7 @@ public class ClienteAlta extends JInternalFrame {
 	/**
 	 * Launch the application.
 	 */
+	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -49,11 +50,12 @@ public class ClienteAlta extends JInternalFrame {
 			}
 		});
 	}
+	*/
 
 	/**
 	 * Create the frame.
 	 */
-	public ClienteAlta() {
+	public ClienteAlta(String text) {
 		setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().setBackground(new Color(245, 245, 245));
 		setClosable(true);
@@ -75,12 +77,12 @@ public class ClienteAlta extends JInternalFrame {
 		
 		JLabel altaClienteTelefono = new JLabel("Teléfono:");
 		altaClienteTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		altaClienteTelefono.setBounds(35, 253, 91, 14);
+		altaClienteTelefono.setBounds(35, 197, 91, 14);
 		getContentPane().add(altaClienteTelefono);
 		
 		JLabel lblNewLabel_4 = new JLabel("Mail:");
 		lblNewLabel_4.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		lblNewLabel_4.setBounds(35, 313, 106, 14);
+		lblNewLabel_4.setBounds(35, 263, 106, 14);
 		getContentPane().add(lblNewLabel_4);
 		
 		textFieldNombre = new JTextField();
@@ -95,12 +97,12 @@ public class ClienteAlta extends JInternalFrame {
 		
 		textFieldTelefono = new JTextField();
 		textFieldTelefono.setColumns(10);
-		textFieldTelefono.setBounds(35, 274, 232, 28);
+		textFieldTelefono.setBounds(35, 218, 232, 28);
 		getContentPane().add(textFieldTelefono);
 		
 		textFieldMail = new JTextField();
 		textFieldMail.setColumns(10);
-		textFieldMail.setBounds(35, 331, 232, 28);
+		textFieldMail.setBounds(35, 283, 232, 28);
 		getContentPane().add(textFieldMail);
 		
 		JButton btnRegistrar = new JButton("Registrar");
@@ -109,7 +111,7 @@ public class ClienteAlta extends JInternalFrame {
 		btnRegistrar.setBackground(new Color(143, 188, 143));
 		btnRegistrar.setForeground(new Color(255, 255, 255));
 		btnRegistrar.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnRegistrar.setBounds(289, 367, 135, 36);
+		btnRegistrar.setBounds(289, 363, 135, 36);
 		getContentPane().add(btnRegistrar);
 		
 		JLabel lblDni = new JLabel("Dni:");
@@ -118,6 +120,10 @@ public class ClienteAlta extends JInternalFrame {
 		getContentPane().add(lblDni);
 		
 		textFieldDni = new JTextField();
+		if(!text.isEmpty()) {
+			textFieldDni.setText(text);
+			textFieldDni.setEditable(false);
+		}
 		textFieldDni.setColumns(10);
 		textFieldDni.setBounds(35, 32, 232, 28);
 		getContentPane().add(textFieldDni);
@@ -146,21 +152,31 @@ public class ClienteAlta extends JInternalFrame {
             // lanza mensaje si hay alguno vacío
             JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-	        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
-	        String datosCliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
+	        if(controlador.hayUnClienteConEsteDNI(dni).equals("No hay ningún cliente con ese DNI")) {
+		        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
+		        String datosCliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
 	        
-	        controlador.insertarCliente(datosCliente);
-	
-	        // Limpiar los campos de texto después de registrar el cliente(si no, no funciona)
-	        textFieldDni.setText("");
-	        textFieldNombre.setText("");
-	        textFieldApellidos.setText("");
-	        textFieldTelefono.setText("");
-	        textFieldMail.setText("");
-	        
-	        // mensaje de éxito y cerrar el panel con dispose(igual que en utilizaciones anteriores)
-	        JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
-	        //dispose(); --quiero que limpie, pero que no cierre el panel...por ahora
+		        String resultadoInsercion = controlador.insertarCliente(datosCliente);
+		        
+		        if(resultadoInsercion.equals("")) {
+		
+			        // Limpiar los campos de texto después de registrar el cliente(si no, no funciona)
+			        textFieldDni.setText("");
+			        textFieldNombre.setText("");
+			        textFieldApellidos.setText("");
+			        textFieldTelefono.setText("");
+			        textFieldMail.setText("");
+			        
+			        // mensaje de éxito y cerrar el panel con dispose(igual que en utilizaciones anteriores)
+			        JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
+			        dispose(); //quiero que limpie y que cierre el panel
+		        }
+	        } else if(controlador.hayUnClienteConEsteDNI(dni).equals("Sí hay cliente con ese DNI")) {
+	        	JOptionPane.showMessageDialog(null, "Ya hay un cliente con ese DNI.");
+	        } else {
+	        	JOptionPane.showMessageDialog(null, "Error de conexión.");
+		        dispose(); //quiero que limpie y que cierre el panel
+	        }
         }
 	}
 }

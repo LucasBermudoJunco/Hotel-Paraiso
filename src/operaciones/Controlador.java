@@ -24,13 +24,13 @@ public class Controlador {
 	
 	/************************ CLIENTE *************************/
 	
-	public boolean hayUnClienteConEsteDNI(String dni) {
+	public String hayUnClienteConEsteDNI(String dni) {
 		clienteDAO = new ClienteDAO();
 		
-		boolean hayUnClienteConEsteDNI = false;
+		String resultadoConsulta = "No hay ningún cliente con ese DNI";
 		
 		// Escritura en el fichero
-		String rutaFicheroCliente = "files/cliente.txt";
+		String rutaFicheroCliente = "files/cliente.json";
 		
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
@@ -44,14 +44,28 @@ public class Controlador {
 		
 		// Comprobación de si hay un cliente con ese DNI
 		if(clienteDAO.hayUnClienteConEsteDNI(rutaFicheroCliente)) {
-			hayUnClienteConEsteDNI = true;
+			resultadoConsulta = "Sí hay cliente con ese DNI";
+		} else {
+			try {
+				BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroCliente));
+				
+				String contenido = lector.readLine();
+				
+				if(contenido.equals("error de conexión")) {
+					resultadoConsulta = "error de conexión";
+				}
+				
+				lector.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
-		return hayUnClienteConEsteDNI; 
+		return resultadoConsulta; 
 	}
 	
 	public String obtenerInfoClienteConEsteDNI(String dni) {		
-		String infoCliente = "";
+		String infoCliente = "error de conexión";
 		
 		clienteDAO = new ClienteDAO();
 		gson = new Gson();
@@ -70,41 +84,45 @@ public class Controlador {
 		}
 		
 		// Llamada al método DAO que lea el fichero y realice la consulta
-		clienteDAO.read(rutaFicheroCliente);
+		if(clienteDAO.read(rutaFicheroCliente)) {	
+			// Lectura del fichero después de que el método DAO lo haya modificado		
+			try {
+				BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroCliente));
 				
-		// Lectura del fichero después de que el método DAO lo haya modificado		
-		try {
-			BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroCliente));
-			
-			String contenidoDelFichero = "";
-			String lineaActualDelFichero = lector.readLine();
-			
-			if(!lineaActualDelFichero.equals("No hay ningún cliente con ese DNI")) {
-				do {
-					contenidoDelFichero += lineaActualDelFichero;
-					
-					lineaActualDelFichero = lector.readLine();
-				} while(lineaActualDelFichero != null);
-					
-				Cliente cliente = gson.fromJson(contenidoDelFichero, Cliente.class);
+				String contenidoDelFichero = "";
+				String lineaActualDelFichero = lector.readLine();
 				
-				// Incorporación de los datos del cliente al String que va a ser devuelto
-				infoCliente += cliente.getDni() + ",";
-				infoCliente += cliente.getNombre() + ",";
-				infoCliente += cliente.getApellidos() + ",";
-				infoCliente += cliente.getTelefono() + ",";
-				infoCliente += cliente.getEmail();
+				if(!lineaActualDelFichero.equals("No hay ningún cliente con ese DNI")) {
+					do {
+						contenidoDelFichero += lineaActualDelFichero;
+						
+						lineaActualDelFichero = lector.readLine();
+					} while(lineaActualDelFichero != null);
+						
+					Cliente cliente = gson.fromJson(contenidoDelFichero, Cliente.class);
+					
+					// Incorporación de los datos del cliente al String que va a ser devuelto
+					infoCliente = cliente.getDni() + ",";
+					infoCliente += cliente.getNombre() + ",";
+					infoCliente += cliente.getApellidos() + ",";
+					infoCliente += cliente.getTelefono() + ",";
+					infoCliente += cliente.getEmail();
+				} else {
+					infoCliente = "No hay ningún cliente con ese DNI";
+				}
+				
+				lector.close();
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
-			
-			lector.close();
-		} catch(IOException e) {
-			e.printStackTrace();
 		}
 		
 		return infoCliente;
 	}
 	
-	public void insertarCliente(String infoCliente) {
+	public String insertarCliente(String infoCliente) {
+		String resultadoInsercion = "";
+		
 		String[] datosCliente = infoCliente.split(",");
 		
 		clienteDAO = new ClienteDAO();
@@ -128,7 +146,11 @@ public class Controlador {
 			e.printStackTrace();
 		}
 		
-		clienteDAO.create(rutaFicheroCliente);
+		if(!clienteDAO.create(rutaFicheroCliente)){
+			resultadoInsercion = "conexión fallida";
+		}
+		
+		return resultadoInsercion;
 	}
 	
 	
@@ -136,8 +158,8 @@ public class Controlador {
 	
 	/************************ RESERVA *************************/
 	
-	public String obtenerInfoReservaConEsteCodigo(String documento) {
-		String infoReserva = "";
+	public String obtenerInfoReservaConEsteCodigo(String codigoRes) {
+		String infoReserva = "error de conexión";
 		
 		reservaDAO = new ReservaDAO();
 		gson = new Gson();
@@ -148,7 +170,7 @@ public class Controlador {
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroReserva));
 			
-			escritor.write(documento);
+			escritor.write(codigoRes);
 			
 			escritor.close();
 		} catch(IOException e) {
@@ -156,36 +178,40 @@ public class Controlador {
 		}
 		
 		// Llamada al método DAO que lea el fichero y realice la consulta
-		reservaDAO.read(rutaFicheroReserva);
+		if(reservaDAO.read(rutaFicheroReserva)) {
+			// Lectura del fichero después de que el método DAO lo haya modificado		
+			try {
+	
+				BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroReserva));
 				
-		// Lectura del fichero después de que el método DAO lo haya modificado		
-		try {
-
-			BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroReserva));
-			
-			String contenidoDelFichero = "";
-			String lineaActualDelFichero = lector.readLine();
-			
-			if(!lineaActualDelFichero.equals("No hay ninguna reserva con ese código")) {
-				do {
-					contenidoDelFichero += lineaActualDelFichero;
-					
-					lineaActualDelFichero = lector.readLine();
-				} while(lineaActualDelFichero != null);
-					
-				Reserva reserva = gson.fromJson(contenidoDelFichero, Reserva.class);
+				String contenidoDelFichero = "";
+				String lineaActualDelFichero = lector.readLine();
 				
-				// Incorporación de los datos de la reserva al String que va a ser devuelto
-				infoReserva += reserva.getId_reserva() + ",";
-				infoReserva += reserva.getHabitacion() + ",";
-				infoReserva += reserva.getFecha_entrada() + ",";
-				infoReserva += reserva.getFecha_salida() + ",";
-				infoReserva += reserva.getDoc_identidad();
+				if(!lineaActualDelFichero.equals("No hay ninguna reserva con ese código")) {
+					do {
+						contenidoDelFichero += lineaActualDelFichero;
+						
+						lineaActualDelFichero = lector.readLine();
+					} while(lineaActualDelFichero != null);
+						
+					Reserva reserva = gson.fromJson(contenidoDelFichero, Reserva.class);
+					
+					// Incorporación de los datos de la reserva al String que va a ser devuelto
+					infoReserva = reserva.getId_reserva() + ",";
+					infoReserva += reserva.getHabitacion() + ",";
+					infoReserva += reserva.getFecha_entrada() + ",";
+					infoReserva += reserva.getFecha_salida() + ",";
+					infoReserva += reserva.getDoc_identidad();
+				} else {
+					infoReserva = "No hay ninguna reserva con ese código";
+				}
+				
+				lector.close();
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
+		} else {
 			
-			lector.close();
-		} catch(IOException e) {
-			e.printStackTrace();
 		}
 				
 		return infoReserva;

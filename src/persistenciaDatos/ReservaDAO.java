@@ -36,65 +36,86 @@ public class ReservaDAO implements ClasesDAO {
 	
 	
 	@Override
-	public void read(String fichero) {
+	public boolean read(String fichero) {
+		boolean conexionCorrecta = false;
+		
 		conexion = new ConexionABaseDeDatos();
 		gson = new Gson();
 		
-		String codigo = "";
-		
-		// Lectura del fichero 
+		// Conexión a la base de datos
 		try {
-			BufferedReader lector = new BufferedReader(new FileReader(fichero));
-			
-			codigo = lector.readLine();
-			
-			lector.close();
-			
-			// Consulta a la Base de datos
 			Connection con = conexion.conectar();
 			
-			if(con != null) {
-				try {
-					String accionSQL = "select * from reserva where id_reserva = ?";
-					PreparedStatement sentPrep = con.prepareStatement(accionSQL);
-					
-					sentPrep.setString(1, codigo);
-					
-					ResultSet rs = sentPrep.executeQuery();
-					
-					// Escritura del resultado de la consulta en el fichero 				
-					try {					
-
-						BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
+			conexionCorrecta = true;
+		
+			// Lectura del fichero 		
+			String codigo = "";
+			
+			try {
+				BufferedReader lector = new BufferedReader(new FileReader(fichero));
+				
+				codigo = lector.readLine();
+				
+				lector.close();
+				
+				// Consulta a la Base de datos				
+				if(con != null) {
+					try {
+						String accionSQL = "select * from reserva where id_reserva = ?";
+						PreparedStatement sentPrep = con.prepareStatement(accionSQL);
 						
-						if(rs.next()) {
-							String id_reserva_String = rs.getString("id_reserva");
-							int id_reserva_int = Integer.valueOf(id_reserva_String);
-							String habitacion = rs.getString("habitacion");
-							String fecha_entrada = rs.getString("fecha_entrada");
-							String fecha_salida = rs.getString("fecha_salida");
-							String doc_identidad = rs.getString("doc_identidad");
+						sentPrep.setString(1, codigo);
+						
+						ResultSet rs = sentPrep.executeQuery();
+						
+						// Escritura del resultado de la consulta en el fichero 				
+						try {					
+	
+							BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
 							
-							Reserva reserva = new Reserva(id_reserva_int,habitacion,fecha_entrada,fecha_salida,doc_identidad);
+							if(rs.next()) {
+								String id_reserva_String = rs.getString("id_reserva");
+								int id_reserva_int = Integer.valueOf(id_reserva_String);
+								String habitacion = rs.getString("habitacion");
+								String fecha_entrada = rs.getString("fecha_entrada");
+								String fecha_salida = rs.getString("fecha_salida");
+								String doc_identidad = rs.getString("doc_identidad");
+								
+								Reserva reserva = new Reserva(id_reserva_int,habitacion,fecha_entrada,fecha_salida,doc_identidad);
+								
+								String datosReserva = gson.toJson(reserva);
+								
+								escritor.write(datosReserva);
+							} else {
+								escritor.write("No hay ninguna reserva con ese código");
+							}
 							
-							String datosReserva = gson.toJson(reserva);
-							
-							escritor.write(datosReserva);
-						} else {
-							escritor.write("No hay ninguna reserva con ese código");
+							escritor.close();
+						} catch(IOException e) {
+							e.printStackTrace();
 						}
-						
-						escritor.close();
-					} catch(IOException e) {
+					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
-		} catch(IOException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
+			
+			try {
+				BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
+				
+				escritor.write("error de conexión");
+				
+				escritor.close();
+			} catch(IOException ex) {
+				e.printStackTrace();
+			}
 		}
+		
+		return conexionCorrecta;
 	}
 
 	@Override
@@ -148,13 +169,13 @@ public class ReservaDAO implements ClasesDAO {
 	}
 	
 	@Override
-	public void update(String fichero) {
-		
+	public boolean update(String fichero) {
+		return false;
 	}
 	
 	@Override
-	public void delete(String fichero) {
-		
+	public boolean delete(String fichero) {
+		return false;
 	}
 	
 	

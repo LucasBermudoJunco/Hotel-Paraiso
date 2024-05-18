@@ -97,56 +97,47 @@ public class ReservaConsulta extends JInternalFrame {
 		btnBuscar.setBounds(159, 123, 111, 34);
 		btnBuscar.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	               String documento = textFieldDocumento.getText();
-	               buscarReserva(documento);
+	               String codigoRes = textFieldDocumento.getText();
+	               buscarReserva(codigoRes);
 	           }
         });
 		getContentPane().add(btnBuscar);
-		
-		JButton btnReservaFactura = new JButton("Hacer factura");
-		btnReservaFactura.setIcon(new ImageIcon(ReservaConsulta.class.getResource("/Images/factura24px.png")));
-		btnReservaFactura.setForeground(Color.WHITE);
-		btnReservaFactura.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnReservaFactura.setBorderPainted(false);
-		btnReservaFactura.setBackground(new Color(154, 205, 50));
-		btnReservaFactura.setBounds(256, 342, 170, 40);
-		getContentPane().add(btnReservaFactura);
 
 	}
 	
 /********************** MÉTODO BUSCAR RESERVA ******************************************************/	
 
-	private void buscarReserva(String documento) {
+	private void buscarReserva(String codigoRes) {
 		controlador = new Controlador();
 		
-		if (documento.isEmpty()) {
+		if (codigoRes.isEmpty()) {
             // lanza mensaje si hay alguno vacío
             JOptionPane.showMessageDialog(null, "Por favor, rellena el campo.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-    		String infoReserva = controlador.obtenerInfoReservaConEsteCodigo(documento);
+    		String infoReserva = controlador.obtenerInfoReservaConEsteCodigo(codigoRes);
         	
-			if(!infoReserva.isEmpty()) {
+    		if(infoReserva.equals("error de conexión")) {
+				JOptionPane.showMessageDialog(null, "Error de conexión.");
+		        dispose(); //quiero que limpie y que cierre el panel
+			} else if(infoReserva.equals("No hay ninguna reserva con ese código")) {
+				// Si la reserva no se encuentra, lanzar el JOptionPane
+	            JOptionPane.showMessageDialog(null, "No hay ninguna reserva con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
 				String[] datosReserva = infoReserva.split(",");
 				
 				//mostrarInformacionCliente(cliente);
 		        textArea.setText(
-		        	    "INFORMACIÓN DEL CLIENTE:\n" +
+		        	    "INFORMACIÓN DE LA RESERVA:\n" +
 		        	    "___________________________________________________________________________________\n\n" +
-		        	    "ID:\t\t" + datosReserva[0] + "\n" +
-		        	    "HABITACIÓN:\t\t" + datosReserva[1] + "\n" +
+		        	    "ID RESERVA:\t\t" + datosReserva[0] + "\n" +
+		        	    "HABITACION:\t\t" + datosReserva[1] + "\n" +
 		        	    "FECHA DE ENTRADA:\t" + datosReserva[2] + "\n" +
 		        	    "FECHA DE SALIDA:\t" + datosReserva[3] + "\n" +
-		        	    "CÓDIGO DE CLIENTE:\t" + datosReserva[4]
+		        	    "DNI CLIENTE:\t\t" + datosReserva[4]
 		        );
 		        
 		        JOptionPane.showMessageDialog(this, "Reserva encontrada", "Información de la reserva", JOptionPane.INFORMATION_MESSAGE);
 		        
-			} else {
-				// Si el cliente no se encuentra, lanzar el JDialog ConfirmacionCliente
-		        ConfirmacionCliente confCli = new ConfirmacionCliente(getDesktopPane());
-				// Centrar en el escritorio
-				confCli.setLocationRelativeTo(getDesktopPane());
-		        confCli.setVisible(true);
 			}
         }
 	}
