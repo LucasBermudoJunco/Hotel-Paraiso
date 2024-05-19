@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import com.google.gson.Gson;
 
@@ -215,6 +217,81 @@ public class Controlador {
 		}
 				
 		return infoReserva;
+	}
+	
+	public String insertarReserva(String infoReserva) {
+		String resultadoInsercion = "";
+		
+		String[] datosReserva = infoReserva.split(",");
+		
+		reservaDAO = new ReservaDAO();
+		gson = new Gson();
+		
+		String rutaFicheroReserva = "files/reserva.json";
+		
+		try {
+			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroReserva));
+			
+			Reserva reserva = new Reserva(
+					"101",datosReserva[0],datosReserva[1],datosReserva[2]
+			);
+			
+			String reservaParaJSON = gson.toJson(reserva);
+			
+			escritor.write(reservaParaJSON);
+			
+			escritor.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(!reservaDAO.create(rutaFicheroReserva)){
+			resultadoInsercion = "conexión fallida";
+		}
+		
+		return resultadoInsercion;
+	}
+	
+	public double precioFinal(String datosReservaFactura) {
+		double precioFinal = 0;
+		
+		String[] datosFactura = datosReservaFactura.split(",");
+		
+		// tipoHabitacion
+		if(datosFactura[3].equals("Económica")) {
+			precioFinal += 40.00;
+		} else if((datosFactura[3].equals("Estándar"))) {
+			precioFinal += 80.00;
+		} else {
+			precioFinal += 1000.00;
+		}
+		
+		// dias
+		String[] valoresFechaEntrada = datosFactura[0].split("-");
+		LocalDate fechaEntrada = LocalDate.of(Integer.valueOf(valoresFechaEntrada[0]),
+				Integer.valueOf(valoresFechaEntrada[1]),
+				Integer.valueOf(valoresFechaEntrada[2]));
+
+		String[] valoresFechaSalida = datosFactura[1].split("-");
+		LocalDate fechaSalida = LocalDate.of(Integer.valueOf(valoresFechaSalida[0]),
+				Integer.valueOf(valoresFechaSalida[1]),
+				Integer.valueOf(valoresFechaSalida[2]));
+		
+		int dias = (int)ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
+		
+		// extra
+		if(datosFactura[4].equals("Desayuno +10€")) {
+			precioFinal += 10.00;
+		} else if(datosFactura[4].equals("Desayuno +10€")) {
+			precioFinal += 30.00;
+		} else {
+			precioFinal += 60.00;
+		}
+		
+		// Total
+		precioFinal *= dias;
+		
+		return precioFinal;
 	}
 	
 }

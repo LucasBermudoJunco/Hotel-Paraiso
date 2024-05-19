@@ -153,7 +153,7 @@ public class ClienteAlta extends JInternalFrame {
             JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
 	        if(controlador.hayUnClienteConEsteDNI(dni).equals("No hay ningún cliente con ese DNI")) {
-		        // Crear el string del cliente y agregarlo a la lista(segun modelo de prueba)
+		        // Crear el string del cliente
 		        String datosCliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
 	        
 		        String resultadoInsercion = controlador.insertarCliente(datosCliente);

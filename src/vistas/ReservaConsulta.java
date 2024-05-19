@@ -130,7 +130,7 @@ public class ReservaConsulta extends JInternalFrame {
 		        	    "INFORMACIÓN DE LA RESERVA:\n" +
 		        	    "___________________________________________________________________________________\n\n" +
 		        	    "ID RESERVA:\t\t" + datosReserva[0] + "\n" +
-		        	    "HABITACION:\t\t" + datosReserva[1] + "\n" +
+//		        	    "HABITACION:\t\t" + datosReserva[1] + "\n" +
 		        	    "FECHA DE ENTRADA:\t" + datosReserva[2] + "\n" +
 		        	    "FECHA DE SALIDA:\t" + datosReserva[3] + "\n" +
 		        	    "DNI CLIENTE:\t\t" + datosReserva[4]

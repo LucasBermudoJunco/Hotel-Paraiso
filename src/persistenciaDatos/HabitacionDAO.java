@@ -237,27 +237,27 @@ public class HabitacionDAO implements ClasesDAO {
 	}
 
 	@Override
-	public void read(String fichero) {
+	public boolean read(String fichero) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override
-	public void create(String fichero) {
+	public boolean create(String fichero) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override
-	public void update(String fichero) {
+	public boolean update(String fichero) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override
-	public void delete(String fichero) {
+	public boolean delete(String fichero) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 	
 }

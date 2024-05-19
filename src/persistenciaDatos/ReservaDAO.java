@@ -119,53 +119,67 @@ public class ReservaDAO implements ClasesDAO {
 	}
 
 	@Override
-	public void create(String fichero) {
-		conexion = new ConexionABaseDeDatos();
+	public boolean create(String fichero) {
+		boolean conexionCorrecta = false;
 		
 	 	int errorSql = 0;
+		
+		conexion = new ConexionABaseDeDatos();
 	 	
 		Reserva regRes = leerFichero(fichero);
 		
-		Connection con = conexion.conectar();
-		
-		if (con!=null) {
-			String sql = "INSERT INTO reserva (id_reserva,habitacion, fecha_entrada, fecha_salida, doc_identidad ) "
+		try {
+			Connection con = conexion.conectar();
 			
-								+ "             VALUES (null, ?,    ?,     ?,     ? )";
-			 
+			if (con!=null) {
+				String sql = "INSERT INTO reserva (id_reserva,habitacion, fecha_entrada, fecha_salida, doc_identidad ) "
 
-			try {
-				PreparedStatement sentencia = con.prepareStatement(sql);
+									+ "             VALUES (null,101,?,?,?)";
 				
-				sentencia.setString(1, regRes.getHabitacion());
-				sentencia.setString(2, regRes.getFecha_entrada());
-				sentencia.setString(3, regRes.getFecha_salida());
-				sentencia.setString(4, regRes.getDoc_identidad());
-			
-
-				sentencia.executeUpdate();
-
-				con.close();
-				errorSql=0;
-			} catch (SQLException ex) {
-				if (ex.getErrorCode()==1062) {
-					errorSql=1;
-				
-				}else if (ex.getErrorCode()==1045){
-					errorSql=2;
-				
-				}else {
-					System.out.println("Error SQL inesperado :"+ex.getMessage());
-					int errorCode = ex.getErrorCode();
-					System.out.println("Código de Error: " + errorCode);
-					String sqlMessage = ex.getSQLState();
-				    System.out.println("Mensaje SQL: " + sqlMessage);
-				}
-			}
-			//escribirFichSalida escribe sqlcode y por tanto es independiente de la clase que lo trate
-			conexion.escribirFichSalida(errorSql);
+				try {
+					conexionCorrecta = true;
+					
+					PreparedStatement sentencia = con.prepareStatement(sql);
+					
+//					sentencia.setString(1, regRes.getHabitacion());
+					sentencia.setString(1, regRes.getFecha_entrada());
+					sentencia.setString(2, regRes.getFecha_salida());
+					sentencia.setString(3, regRes.getDoc_identidad());
 	
+					sentencia.executeUpdate();
+	
+					con.close();
+					
+					errorSql=0;
+				} catch (SQLException ex) {
+					conexionCorrecta = false;
+					
+					ex.printStackTrace();
+					
+//					if (ex.getErrorCode()==1062) {
+//						errorSql=1;
+//					
+//					} else if (ex.getErrorCode()==1045){
+//						errorSql=2;
+//					
+//					} else {
+//						System.out.println("Error SQL inesperado :"+ex.getMessage());
+//						int errorCode = ex.getErrorCode();
+//						System.out.println("Código de Error: " + errorCode);
+//						String sqlMessage = ex.getSQLState();
+//					    System.out.println("Mensaje SQL: " + sqlMessage);
+//					}
+				}
+				
+				// escribirFichSalida escribe sqlcode y por tanto es independiente de la clase que lo trate
+				conexion.escribirFichSalida(errorSql);
+		
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
+		
+		return conexionCorrecta;
 	}
 	
 	@Override
@@ -201,7 +215,6 @@ public class ReservaDAO implements ClasesDAO {
 			while((fila=leer.readLine())!=null) {
 				regFich
 				+=fila;
-				
 			}
 			
 			leer.close();

@@ -128,7 +128,7 @@ public class ClienteDAO implements ClasesDAO{
 		try {
 			Connection con = conexion.conectar();
 		
-			if (conexion!=null) {
+			if (con!=null) {
 				String sql = "INSERT INTO cliente VALUES (?,?,?,?,?)";
 	
 				try {
