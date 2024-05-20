@@ -151,6 +151,21 @@ public class ClienteAlta extends JInternalFrame {
         if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || mail.isEmpty()) {
             // lanza mensaje si hay alguno vacío
             JOptionPane.showMessageDialog(null, "Por favor, rellena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (dni.length() > 9) {
+            // lanza mensaje si el DNI es más largo de lo permitido
+            JOptionPane.showMessageDialog(null, "El DNI no puede tener más de 9 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (nombre.length() > 20) {
+            // lanza mensaje si el nombre es más largo de lo permitido
+            JOptionPane.showMessageDialog(null, "El nombre no puede tener más de 20 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (apellidos.length() > 50) {
+            // lanza mensaje si los apellidos son más largos de lo permitido
+            JOptionPane.showMessageDialog(null, "Los apellidos no pueden tener más de 50 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (telefono.length() > 12) {
+            // lanza mensaje si el teléfono es más largo de lo permitido
+            JOptionPane.showMessageDialog(null, "El teléfono no puede tener más de 12 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (mail.length() > 50) {
+            // lanza mensaje si el email es más largo de lo permitido
+            JOptionPane.showMessageDialog(null, "El email no puede tener más de 50 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
 	        if(controlador.hayUnClienteConEsteDNI(dni).equals("No hay ningún cliente con ese DNI")) {
 		        // Crear el string del cliente

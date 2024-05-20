@@ -32,7 +32,7 @@ public class Controlador {
 		String resultadoConsulta = "No hay ningún cliente con ese DNI";
 		
 		// Escritura en el fichero
-		String rutaFicheroCliente = "files/cliente.json";
+		String rutaFicheroCliente = "files/salidaCliente.json";
 		
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
@@ -73,7 +73,7 @@ public class Controlador {
 		gson = new Gson();
 		
 		// Escritura del dni en el fichero
-		String rutaFicheroCliente = "files/cliente.json";
+		String rutaFicheroCliente = "files/salidaCliente.json";
 		
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
@@ -130,7 +130,7 @@ public class Controlador {
 		clienteDAO = new ClienteDAO();
 		gson = new Gson();
 		
-		String rutaFicheroCliente = "files/cliente.json";
+		String rutaFicheroCliente = "files/salidaCliente.json";
 		
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
@@ -167,7 +167,7 @@ public class Controlador {
 		gson = new Gson();
 		
 		// Escritura del codigo en el fichero
-		String rutaFicheroReserva = "files/reserva.json";
+		String rutaFicheroReserva = "files/salidaReserva.json";
 		
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroReserva));
@@ -227,7 +227,7 @@ public class Controlador {
 		reservaDAO = new ReservaDAO();
 		gson = new Gson();
 		
-		String rutaFicheroReserva = "files/reserva.json";
+		String rutaFicheroReserva = "files/salidaReserva.json";
 		
 		try {
 			BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroReserva));
@@ -282,7 +282,7 @@ public class Controlador {
 		// extra
 		if(datosFactura[4].equals("Desayuno +10€")) {
 			precioFinal += 10.00;
-		} else if(datosFactura[4].equals("Desayuno +10€")) {
+		} else if(datosFactura[4].equals("Media pensión +30€")) {
 			precioFinal += 30.00;
 		} else {
 			precioFinal += 60.00;

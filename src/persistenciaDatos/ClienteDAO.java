@@ -47,56 +47,58 @@ public class ClienteDAO implements ClasesDAO{
 		try {
 			Connection con = conexion.conectar();
 			
-			conexionCorrecta = true;
-			
-			// Lectura del fichero
-			String documento = "";
+			if(con != null) {
+				conexionCorrecta = true;
 				
-			try {
-				BufferedReader lector = new BufferedReader(new FileReader(fichero));
-				
-				documento = lector.readLine();
-				
-				lector.close();
-				
-				// Consulta a la base de datos
+				// Lectura del fichero
+				String documento = "";
+					
 				try {
-					String accionSQL = "select * from cliente where doc_identidad = ?";
-					PreparedStatement sentPrep = con.prepareStatement(accionSQL);
+					BufferedReader lector = new BufferedReader(new FileReader(fichero));
 					
-					sentPrep.setString(1, documento);
+					documento = lector.readLine();
 					
-					ResultSet rs = sentPrep.executeQuery();
+					lector.close();
 					
-					// Escritura en el fichero
+					// Consulta a la base de datos
 					try {
-						BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
+						String accionSQL = "select * from cliente where doc_identidad = ?";
+						PreparedStatement sentPrep = con.prepareStatement(accionSQL);
 						
-						if(rs.next()) {
-							String dni = rs.getString("doc_identidad");
-							String nombre = rs.getString("nombre");
-							String apellidos = rs.getString("apellidos");
-							String telefono = rs.getString("telefono");
-							String email = rs.getString("email");
+						sentPrep.setString(1, documento);
+						
+						ResultSet rs = sentPrep.executeQuery();
+						
+						// Escritura en el fichero
+						try {
+							BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
 							
-							Cliente cliente = new Cliente(dni,nombre,apellidos,telefono,email);
+							if(rs.next()) {
+								String dni = rs.getString("doc_identidad");
+								String nombre = rs.getString("nombre");
+								String apellidos = rs.getString("apellidos");
+								String telefono = rs.getString("telefono");
+								String email = rs.getString("email");
+								
+								Cliente cliente = new Cliente(dni,nombre,apellidos,telefono,email);
+								
+								String datosCliente = gson.toJson(cliente);
+								
+								escritor.write(datosCliente);
+							} else {
+								escritor.write("No hay ningún cliente con ese DNI");
+							}
 							
-							String datosCliente = gson.toJson(cliente);
-							
-							escritor.write(datosCliente);
-						} else {
-							escritor.write("No hay ningún cliente con ese DNI");
+							escritor.close();
+						} catch(IOException e) {
+							e.printStackTrace();
 						}
-						
-						escritor.close();
-					} catch(IOException e) {
+					} catch(SQLException e) {
 						e.printStackTrace();
 					}
-				} catch(SQLException e) {
+				} catch(IOException e) {
 					e.printStackTrace();
 				}
-			} catch(IOException e) {
-				e.printStackTrace();
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

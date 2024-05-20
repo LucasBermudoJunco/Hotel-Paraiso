@@ -46,60 +46,62 @@ public class ReservaDAO implements ClasesDAO {
 		try {
 			Connection con = conexion.conectar();
 			
-			conexionCorrecta = true;
-		
-			// Lectura del fichero 		
-			String codigo = "";
+			if(con != null) {
+				conexionCorrecta = true;
 			
-			try {
-				BufferedReader lector = new BufferedReader(new FileReader(fichero));
+				// Lectura del fichero 		
+				String codigo = "";
 				
-				codigo = lector.readLine();
-				
-				lector.close();
-				
-				// Consulta a la Base de datos				
-				if(con != null) {
-					try {
-						String accionSQL = "select * from reserva where id_reserva = ?";
-						PreparedStatement sentPrep = con.prepareStatement(accionSQL);
-						
-						sentPrep.setString(1, codigo);
-						
-						ResultSet rs = sentPrep.executeQuery();
-						
-						// Escritura del resultado de la consulta en el fichero 				
-						try {					
-	
-							BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
+				try {
+					BufferedReader lector = new BufferedReader(new FileReader(fichero));
+					
+					codigo = lector.readLine();
+					
+					lector.close();
+					
+					// Consulta a la Base de datos				
+					if(con != null) {
+						try {
+							String accionSQL = "select * from reserva where id_reserva = ?";
+							PreparedStatement sentPrep = con.prepareStatement(accionSQL);
 							
-							if(rs.next()) {
-								String id_reserva_String = rs.getString("id_reserva");
-								int id_reserva_int = Integer.valueOf(id_reserva_String);
-								String habitacion = rs.getString("habitacion");
-								String fecha_entrada = rs.getString("fecha_entrada");
-								String fecha_salida = rs.getString("fecha_salida");
-								String doc_identidad = rs.getString("doc_identidad");
+							sentPrep.setString(1, codigo);
+							
+							ResultSet rs = sentPrep.executeQuery();
+							
+							// Escritura del resultado de la consulta en el fichero 				
+							try {					
+		
+								BufferedWriter escritor = new BufferedWriter(new FileWriter(fichero));
 								
-								Reserva reserva = new Reserva(id_reserva_int,habitacion,fecha_entrada,fecha_salida,doc_identidad);
+								if(rs.next()) {
+									String id_reserva_String = rs.getString("id_reserva");
+									int id_reserva_int = Integer.valueOf(id_reserva_String);
+									String habitacion = rs.getString("habitacion");
+									String fecha_entrada = rs.getString("fecha_entrada");
+									String fecha_salida = rs.getString("fecha_salida");
+									String doc_identidad = rs.getString("doc_identidad");
+									
+									Reserva reserva = new Reserva(id_reserva_int,habitacion,fecha_entrada,fecha_salida,doc_identidad);
+									
+									String datosReserva = gson.toJson(reserva);
+									
+									escritor.write(datosReserva);
+								} else {
+									escritor.write("No hay ninguna reserva con ese código");
+								}
 								
-								String datosReserva = gson.toJson(reserva);
-								
-								escritor.write(datosReserva);
-							} else {
-								escritor.write("No hay ninguna reserva con ese código");
+								escritor.close();
+							} catch(IOException e) {
+								e.printStackTrace();
 							}
-							
-							escritor.close();
-						} catch(IOException e) {
+						} catch (SQLException e) {
 							e.printStackTrace();
 						}
-					} catch (SQLException e) {
-						e.printStackTrace();
 					}
+				} catch(IOException e) {
+					e.printStackTrace();
 				}
-			} catch(IOException e) {
-				e.printStackTrace();
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -134,17 +136,51 @@ public class ReservaDAO implements ClasesDAO {
 			if (con!=null) {
 				String sql = "INSERT INTO reserva (id_reserva,habitacion, fecha_entrada, fecha_salida, doc_identidad ) "
 
-									+ "             VALUES (null,101,?,?,?)";
+									+ "             VALUES (null,?,?,?,?)";
 				
 				try {
 					conexionCorrecta = true;
 					
 					PreparedStatement sentencia = con.prepareStatement(sql);
 					
-//					sentencia.setString(1, regRes.getHabitacion());
-					sentencia.setString(1, regRes.getFecha_entrada());
-					sentencia.setString(2, regRes.getFecha_salida());
-					sentencia.setString(3, regRes.getDoc_identidad());
+					int random = (int)(Math.random()*15+1);
+					String habitacion = "";
+					if(random == 1) {
+						habitacion = "101";
+					} else if(random == 2) {
+						habitacion = "102";
+					} else if(random == 3) {
+						habitacion = "103";
+					} else if(random == 4) {
+						habitacion = "104";
+					} else if(random == 5) {
+						habitacion = "105";
+					} else if(random == 6) {
+						habitacion = "106";
+					} else if(random == 7) {
+						habitacion = "201";
+					} else if(random == 8) {
+						habitacion = "202";
+					} else if(random == 9) {
+						habitacion = "203";
+					} else if(random == 10) {
+						habitacion = "204";
+					} else if(random == 11) {
+						habitacion = "205";
+					} else if(random == 12) {
+						habitacion = "301";
+					} else if(random == 13) {
+						habitacion = "302";
+					} else if(random == 14) {
+						habitacion = "303";
+					} else if(random == 15) {
+						habitacion = "304";
+					}
+					
+					sentencia.setString(1, habitacion);
+					sentencia.setString(2, regRes.getFecha_entrada());
+					sentencia.setString(3, regRes.getFecha_salida());
+					sentencia.setString(4, regRes.getDoc_identidad());
 	
 					sentencia.executeUpdate();
 	

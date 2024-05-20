@@ -64,7 +64,7 @@ public class MenuPrincipal extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MenuPrincipal.class.getResource("/Images/iconoLogo.png")));
 		setFont(new Font("Arial", Font.PLAIN, 15));
 		setType(Type.POPUP);
-		setTitle("Hotel Paradiso V0.0");
+		setTitle("Hotel Paradiso V0.01");
 		setForeground(new Color(255, 255, 255));
 		setBackground(new Color(255, 255, 255));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

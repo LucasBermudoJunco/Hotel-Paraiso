@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.InputMismatchException;
 
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
@@ -114,31 +115,37 @@ public class ReservaConsulta extends JInternalFrame {
             // lanza mensaje si hay alguno vacío
             JOptionPane.showMessageDialog(null, "Por favor, rellena el campo.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-    		String infoReserva = controlador.obtenerInfoReservaConEsteCodigo(codigoRes);
-        	
-    		if(infoReserva.equals("error de conexión")) {
-				JOptionPane.showMessageDialog(null, "Error de conexión.");
-		        dispose(); //quiero que limpie y que cierre el panel
-			} else if(infoReserva.equals("No hay ninguna reserva con ese código")) {
-				// Si la reserva no se encuentra, lanzar el JOptionPane
+        	try {
+        		Integer.valueOf(codigoRes);
+        		
+	    		String infoReserva = controlador.obtenerInfoReservaConEsteCodigo(codigoRes);
+	        	
+	    		if(infoReserva.equals("error de conexión")) {
+					JOptionPane.showMessageDialog(null, "Error de conexión.");
+//			        dispose(); //quiero que limpie y que cierre el panel
+				} else if(infoReserva.equals("No hay ninguna reserva con ese código")) {
+					// Si la reserva no se encuentra, lanzar el JOptionPane
+		            JOptionPane.showMessageDialog(null, "No hay ninguna reserva con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					String[] datosReserva = infoReserva.split(",");
+					
+					//mostrarInformacionCliente(cliente);
+			        textArea.setText(
+			        	    "INFORMACIÓN DE LA RESERVA:\n" +
+			        	    "___________________________________________________________________________________\n\n" +
+			        	    "ID RESERVA:\t\t" + datosReserva[0] + "\n" +
+	//		        	    "HABITACION:\t\t" + datosReserva[1] + "\n" +
+			        	    "FECHA DE ENTRADA:\t" + datosReserva[2] + "\n" +
+			        	    "FECHA DE SALIDA:\t" + datosReserva[3] + "\n" +
+			        	    "DNI CLIENTE:\t\t" + datosReserva[4]
+			        );
+			        
+			        JOptionPane.showMessageDialog(this, "Reserva encontrada", "Información de la reserva", JOptionPane.INFORMATION_MESSAGE);
+			        
+				}
+        	} catch(NumberFormatException e) {
 	            JOptionPane.showMessageDialog(null, "No hay ninguna reserva con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
-			} else {
-				String[] datosReserva = infoReserva.split(",");
-				
-				//mostrarInformacionCliente(cliente);
-		        textArea.setText(
-		        	    "INFORMACIÓN DE LA RESERVA:\n" +
-		        	    "___________________________________________________________________________________\n\n" +
-		        	    "ID RESERVA:\t\t" + datosReserva[0] + "\n" +
-//		        	    "HABITACION:\t\t" + datosReserva[1] + "\n" +
-		        	    "FECHA DE ENTRADA:\t" + datosReserva[2] + "\n" +
-		        	    "FECHA DE SALIDA:\t" + datosReserva[3] + "\n" +
-		        	    "DNI CLIENTE:\t\t" + datosReserva[4]
-		        );
-		        
-		        JOptionPane.showMessageDialog(this, "Reserva encontrada", "Información de la reserva", JOptionPane.INFORMATION_MESSAGE);
-		        
-			}
+        	}
         }
 	}
 }

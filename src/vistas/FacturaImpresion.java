@@ -14,6 +14,8 @@ import operaciones.Controlador;
 
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import java.awt.Toolkit;
+import java.awt.Font;
 
 public class FacturaImpresion extends JDialog {
 
@@ -40,19 +42,24 @@ public class FacturaImpresion extends JDialog {
 	 * Create the dialog.
 	 */
 	public FacturaImpresion(String datosReservaFactura) {
-		setBounds(100, 100, 450, 300);
+		setResizable(false);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(FacturaImpresion.class.getResource("/Images/factura16px.png")));
+		setTitle("Factura");
+		setBounds(100, 100, 542, 387);
 		getContentPane().setLayout(null);
 		
 		textArea = new JTextArea();
-		textArea.setBounds(48, 62, 281, 133);
+		textArea.setBounds(64, 66, 393, 219);
+		textArea.setEditable(false);
 		getContentPane().add(textArea);
 		
 		JLabel lblNewLabel = new JLabel("Factura de la reserva");
-		lblNewLabel.setBounds(48, 23, 147, 13);
+		lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		lblNewLabel.setBounds(64, 25, 147, 13);
 		getContentPane().add(lblNewLabel);
 		
 		JButton btnNewButton = new JButton("Cerrar");
-		btnNewButton.setBounds(241, 217, 85, 21);
+		btnNewButton.setBounds(372, 304, 85, 21);
 		getContentPane().add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -72,14 +79,14 @@ public class FacturaImpresion extends JDialog {
 		
 		textArea.setText(
         	    "INFORMACIÓN DE LA RESERVA:\n" +
-        	    "___________________________________________________________________________________\n\n" +
-        	    "DNI:\t\t" + datosReserva[0] + "\n" +
-        	    "TIPO DE HABITACION:\t\t" + datosReserva[1] + "\n" +
-        	    "FECHA DE ENTRADA:\t" + datosReserva[2] + "\n" +
-        	    "FECHA DE SALIDA:\t" + datosReserva[3] + "\n" +
+        	    "_________________________________________________\n\n" +
+        	    "DNI:\t\t" + datosReserva[2] + "\n" +
+        	    "TIPO DE HABITACION:\t" + datosReserva[3] + "\n" +
+        	    "FECHA DE ENTRADA:\t" + datosReserva[0] + "\n" +
+        	    "FECHA DE SALIDA:\t" + datosReserva[1] + "\n" +
         	    "EXTRA:\t\t" + datosReserva[4] + "\n" +
-        	    "_________________________________________\n\n" +
-        	    "PRECIO TOTAL:\t\t" + precioFinal
+        	    "_________________________________________________\n\n" +
+        	    "PRECIO TOTAL:\t" + precioFinal + " €"
         );
 	}
 }
