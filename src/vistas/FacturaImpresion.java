@@ -1,6 +1,7 @@
 package vistas;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,13 +60,17 @@ public class FacturaImpresion extends JDialog {
 		getContentPane().add(lblNewLabel);
 		
 		JButton btnNewButton = new JButton("Cerrar");
+		btnNewButton.setForeground(Color.WHITE);
 		btnNewButton.setBounds(372, 304, 85, 21);
+		btnNewButton.setBorderPainted(false);
+		btnNewButton.setBackground(new Color(220, 20, 60));
 		getContentPane().add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	               dispose();
 	           }
         });
+		
 		
 		mostrarPrecio(datosReservaFactura);
 	}

@@ -94,6 +94,8 @@ public class ClienteDAO implements ClasesDAO{
 							e.printStackTrace();
 						}
 					} catch(SQLException e) {
+						conexionCorrecta = false;
+						
 						e.printStackTrace();
 					}
 				} catch(IOException e) {
@@ -263,6 +265,16 @@ public class ClienteDAO implements ClasesDAO{
 				}
 			} catch(SQLException e) {
 				e.printStackTrace();
+				
+				try {
+					BufferedWriter escritor = new BufferedWriter(new FileWriter(rutaFicheroCliente));
+					
+					escritor.write("error de conexión");
+					
+					escritor.close();
+				} catch(IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		} catch(Exception ex) {
 			try {

@@ -116,7 +116,7 @@ public class ReservaCreacion extends JInternalFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(100, 149, 237));
-		panel.setBounds(0, 288, 458, 40);
+		panel.setBounds(0, 288, 458, 80);
 		getContentPane().add(panel);
 		
 		JRadioButton radioButtonDesayuno = new JRadioButton("Desayuno +10€");
@@ -154,10 +154,10 @@ public class ReservaCreacion extends JInternalFrame {
 		});
 		btnRealizarReserva.setIcon(new ImageIcon(ReservaCreacion.class.getResource("/Images/reserva24px.png")));
 		btnRealizarReserva.setForeground(Color.WHITE);
-		btnRealizarReserva.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btnRealizarReserva.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		btnRealizarReserva.setBorderPainted(false);
 		btnRealizarReserva.setBackground(new Color(220, 20, 60));
-		btnRealizarReserva.setBounds(266, 380, 170, 40);
+		btnRealizarReserva.setBounds(214, 380, 222, 40);
 		getContentPane().add(btnRealizarReserva);
 
 	}

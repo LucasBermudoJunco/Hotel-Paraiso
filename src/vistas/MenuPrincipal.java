@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JDesktopPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window.Type;
 import javax.swing.JLabel;
@@ -46,7 +47,7 @@ public class MenuPrincipal extends JFrame {
 			public void run() {
 				try {
 					MenuPrincipal frame = new MenuPrincipal();
-					//Activar pantalla completa
+					// Activar pantalla completa
 					frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -60,15 +61,17 @@ public class MenuPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public MenuPrincipal() {
-		setResizable(false);
+		setResizable(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MenuPrincipal.class.getResource("/Images/iconoLogo.png")));
 		setFont(new Font("Arial", Font.PLAIN, 15));
-		setType(Type.POPUP);
+//		setType(Type.POPUP);
 		setTitle("Hotel Paradiso V0.01");
 		setForeground(new Color(255, 255, 255));
 		setBackground(new Color(255, 255, 255));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 800);
+		Dimension minSize = new Dimension(720, 800);
+	    setMinimumSize(minSize);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setForeground(Color.WHITE);

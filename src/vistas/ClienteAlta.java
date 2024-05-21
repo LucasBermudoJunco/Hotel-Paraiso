@@ -110,8 +110,8 @@ public class ClienteAlta extends JInternalFrame {
 		btnRegistrar.setBorderPainted(false);
 		btnRegistrar.setBackground(new Color(143, 188, 143));
 		btnRegistrar.setForeground(new Color(255, 255, 255));
-		btnRegistrar.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnRegistrar.setBounds(289, 363, 135, 36);
+		btnRegistrar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		btnRegistrar.setBounds(35, 355, 205, 36);
 		getContentPane().add(btnRegistrar);
 		
 		JLabel lblDni = new JLabel("Dni:");
@@ -167,7 +167,9 @@ public class ClienteAlta extends JInternalFrame {
             // lanza mensaje si el email es más largo de lo permitido
             JOptionPane.showMessageDialog(null, "El email no puede tener más de 50 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-	        if(controlador.hayUnClienteConEsteDNI(dni).equals("No hay ningún cliente con ese DNI")) {
+        	String resuCons = controlador.hayUnClienteConEsteDNI(dni);
+        	
+	        if(resuCons.equals("No hay ningún cliente con ese DNI")) {
 		        // Crear el string del cliente
 		        String datosCliente = dni + "," + nombre + "," + apellidos + "," + telefono + "," + mail;
 	        
@@ -186,7 +188,7 @@ public class ClienteAlta extends JInternalFrame {
 			        JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
 			        dispose(); //quiero que limpie y que cierre el panel
 		        }
-	        } else if(controlador.hayUnClienteConEsteDNI(dni).equals("Sí hay cliente con ese DNI")) {
+	        } else if(resuCons.equals("Sí hay cliente con ese DNI")) {
 	        	JOptionPane.showMessageDialog(null, "Ya hay un cliente con ese DNI.");
 	        } else {
 	        	JOptionPane.showMessageDialog(null, "Error de conexión.");

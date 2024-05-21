@@ -49,7 +49,7 @@ public class ConfirmacionCliente extends JDialog {
 	 * Create the dialog.
 	 */
 	public ConfirmacionCliente(JDesktopPane desktopPane, String text) {
-		setType(Type.POPUP);
+//		setType(Type.POPUP);
 		setResizable(false);
 		
 		this.desktopPane = desktopPane;
@@ -78,7 +78,7 @@ public class ConfirmacionCliente extends JDialog {
 			okButton.setForeground(new Color(255, 255, 255));
 			okButton.setBackground(new Color(143, 188, 143));
 			okButton.setBorderPainted(false);
-			okButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+			okButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
 			okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					
@@ -92,7 +92,7 @@ public class ConfirmacionCliente extends JDialog {
 					
 				}
 			});
-			okButton.setBounds(98, 104, 120, 35);
+			okButton.setBounds(63, 104, 155, 35);
 			contentPanel.add(okButton);
 			okButton.setActionCommand("OK");
 			getRootPane().setDefaultButton(okButton);
@@ -102,8 +102,8 @@ public class ConfirmacionCliente extends JDialog {
 			cancelButton.setForeground(new Color(255, 255, 255));
 			cancelButton.setBackground(new Color(165, 42, 42));
 			cancelButton.setBorderPainted(false);
-			cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-			cancelButton.setBounds(228, 104, 120, 35);
+			cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+			cancelButton.setBounds(228, 104, 155, 35);
 			contentPanel.add(cancelButton);
 			cancelButton.setActionCommand("Cancel");
 			

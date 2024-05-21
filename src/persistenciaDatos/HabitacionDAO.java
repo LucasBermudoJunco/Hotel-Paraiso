@@ -168,7 +168,7 @@ public class HabitacionDAO implements ClasesDAO {
 				regGson = gson.toJson(listHab);
 					
 				BufferedWriter escribir=null;
-				ficheroRetorno="salidaHabitacion.json";
+				ficheroRetorno="src/files/salidaHabitacion.json";
 				try {
 					escribir=new BufferedWriter(new FileWriter(ficheroRetorno));
 						

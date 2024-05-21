@@ -92,10 +92,10 @@ public class ReservaConsulta extends JInternalFrame {
 		JButton btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(new ImageIcon(ReservaConsulta.class.getResource("/Images/lupa24px.png")));
 		btnBuscar.setForeground(Color.WHITE);
-		btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		btnBuscar.setBorderPainted(false);
 		btnBuscar.setBackground(new Color(30, 144, 255));
-		btnBuscar.setBounds(159, 123, 111, 34);
+		btnBuscar.setBounds(137, 123, 180, 34);
 		btnBuscar.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	               String codigoRes = textFieldDocumento.getText();
@@ -116,14 +116,14 @@ public class ReservaConsulta extends JInternalFrame {
             JOptionPane.showMessageDialog(null, "Por favor, rellena el campo.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
         	try {
-        		Integer.valueOf(codigoRes);
+        		String infoReserva = controlador.obtenerInfoReservaConEsteCodigo(codigoRes);
         		
-	    		String infoReserva = controlador.obtenerInfoReservaConEsteCodigo(codigoRes);
-	        	
 	    		if(infoReserva.equals("error de conexión")) {
 					JOptionPane.showMessageDialog(null, "Error de conexión.");
 //			        dispose(); //quiero que limpie y que cierre el panel
 				} else if(infoReserva.equals("No hay ninguna reserva con ese código")) {
+					Integer.valueOf(codigoRes);
+					
 					// Si la reserva no se encuentra, lanzar el JOptionPane
 		            JOptionPane.showMessageDialog(null, "No hay ninguna reserva con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {

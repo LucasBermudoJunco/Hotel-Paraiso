@@ -96,6 +96,8 @@ public class ReservaDAO implements ClasesDAO {
 								e.printStackTrace();
 							}
 						} catch (SQLException e) {
+							conexionCorrecta = false;
+							
 							e.printStackTrace();
 						}
 					}
@@ -307,7 +309,7 @@ public class ReservaDAO implements ClasesDAO {
 					regGson = gson.toJson(regRes);
 					
 					BufferedWriter escribir=null;
-					nomFich="salidaReserva.json";
+					nomFich="src/files/salidaReserva.json";
 					try {
 						escribir=new BufferedWriter(new FileWriter(nomFich));
 						

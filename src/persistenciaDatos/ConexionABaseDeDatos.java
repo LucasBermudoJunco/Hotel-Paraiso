@@ -33,7 +33,7 @@ public class ConexionABaseDeDatos {
 		String[] datosFichero = new String[0];
 		
 		// Lectura del fichero que contiene Usuario y Contraseña
-		String rutaFicheroUsuarioContrasenya = "files/usuarioContrasenya.txt";
+		String rutaFicheroUsuarioContrasenya = "src/files/usuarioContrasenya.txt";
 		
 		try {
 			BufferedReader lector = new BufferedReader(new FileReader(rutaFicheroUsuarioContrasenya));
@@ -52,7 +52,7 @@ public class ConexionABaseDeDatos {
 	public void escribirFichSalida(int errorSql) {
 		BufferedWriter escribir=null;
 		
-		String nomFich="salidaSql.txt";
+		String nomFich="src/files/salidaSql.txt";
 		
 		try {
 			String sqlCode = Integer.toString(errorSql);/* lo paso a String para escribir en el fichero de salida*/

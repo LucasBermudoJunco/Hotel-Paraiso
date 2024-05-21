@@ -103,13 +103,13 @@ public class ClienteConsulta extends JInternalFrame {
 		btnBuscar.setForeground(new Color(255, 255, 255));
 		btnBuscar.setBorderPainted(false);
 		btnBuscar.setBackground(new Color(30, 144, 255));
-		btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 12));
 	    btnBuscar.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	               buscarCliente();
 	           }
         });
-        btnBuscar.setBounds(159, 123, 111, 34);
+        btnBuscar.setBounds(137, 123, 180, 34);
         getContentPane().add(btnBuscar);
 	        
         JButton btnReserva = new JButton("Hacer reserva");
@@ -117,7 +117,7 @@ public class ClienteConsulta extends JInternalFrame {
         btnReserva.setForeground(new Color(255, 255, 255));
         btnReserva.setBorderPainted(false);
         btnReserva.setBackground(new Color(220, 20, 60));
-        btnReserva.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnReserva.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnReserva.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		
@@ -127,7 +127,7 @@ public class ClienteConsulta extends JInternalFrame {
         		
         	}
         });
-        btnReserva.setBounds(266, 342, 170, 40);
+        btnReserva.setBounds(214, 342, 222, 40);
         getContentPane().add(btnReserva);
 	}
 	
@@ -141,6 +141,9 @@ public class ClienteConsulta extends JInternalFrame {
 		if (documento.isEmpty()) {
             // lanza mensaje si hay alguno vacío
             JOptionPane.showMessageDialog(null, "Por favor, rellena el campo.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if(documento.length() > 9) {
+        	// lanza mensaje si el DNI es más largo de lo permitido
+            JOptionPane.showMessageDialog(null, "El DNI no puede tener más de 9 caracteres (incluyendo espacios).", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
     		String infoCliente = controlador.obtenerInfoClienteConEsteDNI(documento);
     		
