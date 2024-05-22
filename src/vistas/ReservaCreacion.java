@@ -81,7 +81,7 @@ public class ReservaCreacion extends JInternalFrame {
 		
 		comboBox = new JComboBox<>();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Económica", "Estándar", "Suite"}));
-		comboBox.setBounds(165, 110, 108, 22);
+		comboBox.setBounds(165, 110, 109, 22);
 		getContentPane().add(comboBox);
 		
 		JLabel lblTipoDeHabitacin = new JLabel("Tipo de habitación:");
